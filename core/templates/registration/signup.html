@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Registration</title>
+</head>
+<body>
+    <h3>SignUp for an account</h3>
+    <p>Select Below the type of acount you want to create</p>
+
+    <div>
+        <span>
+            <button style="color:black; padding:5px; background-color:rgb(255, 0, 0)">
+                <a href="{% url "student_signup" %}" style="text-decoration:none; color:burlywood">Student</a>
+            </button>
+        </span>
+        <span>
+            <button style="color:black; padding:5px; background-color:rgb(255, 0, 0)">
+                <a href="{% url "supervisor_signup" %}" style="text-decoration:none; color:burlywood">Supervisor</a>
+            </button>
+        </span>
+    </div>
+</body>
+</html>

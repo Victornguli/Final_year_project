@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>base html</title>
+</head>
+<body>
+
+	<h1>This is the base of my project</h1>
+
+	{% if user.is_authenticated %}
+	<p>Your username is {{ user.username }} </p>
+	<div>
+		<p>
+			And you are logged in as a : 
+			{% if user.is_supervisor %}
+			<b>Supervisor</b>	
+			{% else %}
+			<b>Student</b>
+			{% endif %}	
+		</p>
+	</div>
+	<button style="color:black; padding:5px; background-color:rgb(255, 0, 0)">
+		<a href="{% url "logout" %}" style="text-decoration:none; color:burlywood" >Logout</a>
+	</button>
+	{% else %}
+	<p><a href="{% url "login" %}" style="text-decoration:none; color:black; padding:5px; background-color:aqua">Login</a></p>
+	<p>Not registered? SignUp here..
+		<form action="{% url "signup"  %}" method="POST">
+			{% csrf_token %}
+			<input type="submit" value="SignUp" color:red	>
+		</form>
+	</p>
+	{% endif %}
+</body>
+</html>

@@ -1,0 +1,56 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Site Registration</title>
+	<link rel="stylesheet" href="/static/core/bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container">
+		<div class="mt-5 mb-3">
+			{% if "/accounts/signup/student/" == request.path %}
+			<h3> <b>Student Registration</b></h3>
+			{% else %}
+			<h3> <b>Supervisor Registration</b></h3>	
+			{% endif %}
+		</div>
+			<!-- <form action="" method="POST">
+		
+				{% csrf_token %}
+				
+				{{ form }}
+		
+				<input type="submit" value="register">
+			</form> -->
+			<form action="" method="POST">
+				{% csrf_token %}
+				{% for field in form %}
+				<p>
+				{{ field.label_tag }}<br>
+				{{ field }}
+				{% for error in field.errors %}
+				<div>
+					<div class="alert alert-danger" style="width:50%; text-align:left">{{ error }}</div>
+				</div>
+				{% endfor %}
+				</p>
+				{% endfor %}
+				<input type="submit" value="Sign Up">
+				<!-- <div class="form-group">
+					{% for field in form %}
+					<p>
+					{{ field.label_tag }} <br>
+					{{ field }}
+					{% for error in field.errors %}
+					<div>
+						<div class="alert alert-danger" style="width:50%; text-align:left">{{ error }}</div>
+					</div>
+					{% endfor %}
+					</p>
+					{% endfor %}
+					<input type="submit" value="Sign Up"> -->
+			</form>
+	</div>
+</body>
+</html>
