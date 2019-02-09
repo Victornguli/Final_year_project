@@ -1,15 +1,63 @@
 
+body{
+    background: #b0dadb;
+}
+
+.navbar {
+    width: 85%;
+    margin: auto;
+}
+
+.navbar  #login{
+    background-color: whitesmoke;
+    color: black;
+    border-radius: 3px;
+    margin: 0px 5px 0px 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+
+}
+
+.navbar  #login:hover{
+    background-color: #ffffff;
+}
+
+.navbar  #signup{
+    background-color: rgb(69, 93, 233);
+    color: black;
+    border-radius: 3px;
+    margin: 0px 5px 0px 5px;
+    padding-left: 15px;
+    padding-right: 15px
+}
+
+#wrapper{
+    width: 85%;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+#intro{
+    margin-top: 10px;
+}
+
 .flex-container{
     display:flex;
     flex-direction: column;
 
 }
 
+/* .row{
+    width: 90%;
+} */
+
 #head-titles{
     display:flex;
     flex-direction: row;
     background-color: #ffffff;
-    width: 97%;
     text-align: left;
     line-height: 20px;
     font-size: 18px;
@@ -19,10 +67,10 @@
 }
 
 .title {
-    margin: 10px;
+    margin: 15px;
 }
 .info{
-    margin: 10px;
+    margin: 15px;
 }
 
 .year{
@@ -31,7 +79,7 @@
 
 .project-name{
     width: 40%;
-    text-align: justify;
+    text-align: left;
 }
 
 .lastname{
@@ -54,13 +102,13 @@
     display:flex;
     flex-direction: row;
     background-color: #ffffff;
-    width: 97%;
     text-align: left;
     line-height: 20px;
     font-size: 16px;
     font-weight: 300;
     /* border-top: 1px solid rgb(184, 181, 181); */
     border-bottom: 1px solid rgb(184, 181, 181);
+    opacity: 0.8;
 
 }
 
@@ -68,6 +116,7 @@
     cursor: pointer;
     transform: scale(1.005);
     transition: transform 0.2s ease;
+    opacity: 1.5;
 }
 
 
