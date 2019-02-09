@@ -50,3 +50,6 @@ class SupervisorSignUp(CreateView):
 #             login(request, user)
 #             return redirect(request, login)
 #     return render(request, "core/base.html")
+
+def PastProjets(request):
+    return render(request, "core/projects.html")
