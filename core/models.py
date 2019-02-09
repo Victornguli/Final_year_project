@@ -65,4 +65,27 @@ class AvailableDays(models.Model):
     time = models.TimeField(auto_now=False, auto_now_add=False)
     # weekdays = weekday_field.fields.WeekdayField()
 
+class Schedule(models.Model):
+    start_date = models.DateField(auto_now_add=False, auto_now=False)
+    end_date = models.DateField(auto_now_add=False, auto_now=False)
+
+class Milestone(models.Model):
+    Not_Started = "NS"
+    Ongoing = "ON"
+    Finished = "FN"
+
+    milestone_status = (
+        (Not_Started, "Not Started"),
+        (Ongoing, "Ongoing"),
+        (Finished, "Finished"),
+    )
+
+    milestone = models.CharField(max_length=100)
+    start_date = models.DateField(auto_now_add=False, auto_now=False)
+    end_date = models.DateField(auto_now_add=False, auto_now=False)
+    status = models.CharField(max_length=2, choices=milestone_status)
+
+
+
+
 
