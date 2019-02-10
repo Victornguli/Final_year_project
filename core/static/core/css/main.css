@@ -1,11 +1,14 @@
 
 body{
-    background: #b0dadb;
+    font-size: 15px;
+    opacity: 0.9;
 }
 
 .navbar {
-    width: 85%;
+    width: 100%;
     margin: auto;
+    /* background-color: rgb(129, 128, 128);
+    color: white; */
 }
 
 .navbar .navbar-brand{
@@ -36,12 +39,17 @@ body{
     padding-right: 15px
 }
 
-#wrapper{
-    width: 85%;
+.wrapper{
+    width: 100%;
     margin: auto;
-    background-color: #ffffff;
-    padding: 20px;
+    background-color: whitesmoke;
+    padding:50px 20px 20px 20px;
     border-radius: 5px;
+}
+
+.main{
+    width: 60%;
+    margin: auto;
 }
 
 #intro{
@@ -61,7 +69,7 @@ body{
 #head-titles{
     display:flex;
     flex-direction: row;
-    background-color: #ffffff;
+    background-color: whitesmoke;
     text-align: left;
     line-height: 20px;
     font-size: 18px;
@@ -71,10 +79,10 @@ body{
 }
 
 .title {
-    margin: 15px;
+    margin: 15px 15px 15px 15px;
 }
 .info{
-    margin: 15px;
+    margin: 10px;
 }
 
 .year{
@@ -82,8 +90,7 @@ body{
 }
 
 .project-name{
-    width: 40%;
-    text-align: left;
+    width: 30%;
 }
 
 .lastname{
@@ -91,11 +98,11 @@ body{
 }
 
 .firstname{
-    width: 20%;
+    width: 18%;
 }
 
 .more-info{
-    width: 10%;
+    width: 18%;
 }
 
 .supervisor{
@@ -112,7 +119,6 @@ body{
     font-weight: 300;
     /* border-top: 1px solid rgb(184, 181, 181); */
     border-bottom: 1px solid rgb(184, 181, 181);
-    opacity: 0.8;
 
 }
 
@@ -127,3 +133,15 @@ body{
 .project-info:nth-child(even){
     background-color: #eeeded;
 }
+
+#login #username, #password{
+    width: 70%;
+    border: 1px solid gray;
+    border-radius: 3px;
+}
+
+/* #signup .field{
+    width: 70%;
+    border: 1px solid gray;
+    border-radius: 3px
+} */

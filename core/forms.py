@@ -6,11 +6,12 @@ from core.models import User, Student, Supervisor
 
 
 class StudentSignUpForm(UserCreationForm):
-    # interests = forms.ModelMultipleChoiceField(
-    #     queryset=Subject.objects.all(),widget=forms.CheckboxSelectMultiple,required=True)
+    first_name = forms.CharField(max_length=30, required=True, help_text="Optional")
+    last_name = forms.CharField(max_length=30, required=True, help_text="Optional")
 
     class Meta(UserCreationForm.Meta):
         model = User
+        fields = ("username", "first_name", "last_name", "email", "password1", "password2")
 
     @transaction.atomic
     def save(self):
