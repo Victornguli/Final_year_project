@@ -39,18 +39,9 @@ class Student(models.Model):
     reg_number = models.CharField(max_length=30, unique=True)
     supervisor = models.ForeignKey(Supervisor, on_delete=models.CASCADE, null=True)
     project = models.OneToOneField(Project, on_delete=models.CASCADE, null=True)
+    status = models.BooleanField(default=True)
 
-
-class Appointment(models.Model):
-    supervisor = models.OneToOneField(Supervisor, on_delete=models.CASCADE)
-    student = models.OneToOneField(Student, on_delete=models.CASCADE)
-    date = models.DateField(auto_now=False, auto_now_add=False)
-    time = models.TimeField(auto_now=False, auto_now_add=False)
-    approve = models.BooleanField(default = False)
-    reject = models.BooleanField(default = False)
-
-
-class AvailableDays(models.Model):
+class AvailableDay(models.Model):
     DAYS_OF_WEEK = (
     (0, 'Monday'),
     (1, 'Tuesday'),
@@ -60,10 +51,16 @@ class AvailableDays(models.Model):
     (5, 'Saturday'),
     (6, 'Sunday'),
     )
-
-    days = models.CharField(max_length=1, choices=DAYS_OF_WEEK)
+    
+    day = models.CharField(max_length=1, choices=DAYS_OF_WEEK)
     time = models.TimeField(auto_now=False, auto_now_add=False)
-    # weekdays = weekday_field.fields.WeekdayField()
+
+class Appointment(models.Model):
+    supervisor = models.ForeignKey(Supervisor, on_delete=models.CASCADE, null=True)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
+    date = models.DateField(auto_now=False, auto_now_add=False)
+    time = models.TimeField(auto_now=False, auto_now_add=False)
+    approved = models.BooleanField(default = False)
 
 class Schedule(models.Model):
     start_date = models.DateField(auto_now_add=False, auto_now=False)
@@ -84,8 +81,5 @@ class Milestone(models.Model):
     start_date = models.DateField(auto_now_add=False, auto_now=False)
     end_date = models.DateField(auto_now_add=False, auto_now=False)
     status = models.CharField(max_length=2, choices=milestone_status)
-
-
-
 
 

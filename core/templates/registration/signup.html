@@ -1,91 +1,15 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Registration</title>
-	<link rel="stylesheet" href="{% static "/core/bootstrap/css/bootstrap.min.css" %}">
-	<link rel="stylesheet" href="{% static "/core/css/main.css" %}">
-</head>
-<body>
-	<div class="container">
-            <div>
-                    <h1 class="text-center text-primary">Chuka University</h1>
-                    {% if user.is_authenticated %}
-                    <nav class="navbar navbar-expand-lg navbar-light ">
-                        <a class="navbar-brand" href="{% url "index" %}"><h4>Student Project Management System</h4></a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                          <span class="navbar-toggler-icon"></span>
-                        </button>
-                      
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                          <ul class="navbar-nav mr-auto">
-                          </ul>
-            
-                          <ul class="navbar-nav ml-auto">
-                            <li class="nav-item ">
-                              <a class="nav-link" href="{% url "index" %}">Home <span class="sr-only">(current)</span></a>
-                            </li>
-                            <li class="nav-item active">
-                              <a class="nav-link" href="{% url "projects" %}">Past Projects
-                                <span class="sr-only">(current)</span>
-                            </a>
-                            </li>                                  
-                            <!-- <li class="nav-item">
-                                <a href="{% url "login" %}" class="nav-link" id="login">Log in</a>
-                            </li> -->
-                            <li class="nav-item" id="signup">
-                              <a class="nav-link" href="{% url "logout" %}">Logout
-                              </a>                           
-                            </li>                          
-                          </ul>
-                        </div>
-                      </nav>                    
-                    {% else %}
-                    <nav class="navbar navbar-expand-lg navbar-light ">
-                            <a class="navbar-brand" href="{% url "index" %}"><h4>Student Project Management System</h4></a>
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                              <span class="navbar-toggler-icon"></span>
-                            </button>
-                          
-                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                              <ul class="navbar-nav mr-auto">
-                              </ul>
-                
-                              <ul class="navbar-nav ml-auto">
-                                <li class="nav-item ">
-                                  <a class="nav-link" href="{% url "index" %}">Home <span class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="nav-item active">
-                                  <a class="nav-link" href="{% url "projects" %}">Past Projects
-                                    <span class="sr-only">(current)</span>
-                                </a>
-                                </li>                                  
-                                <li class="nav-item">
-                                    <a href="{% url "login" %}" class="nav-link" id="login">Log in</a>
-                                </li>
-                                <li class="nav-item" id="signup">
-                                  <a class="nav-link" href="{% url "signup" %}">Register
-                                  </a>                           
-                                </li>                          
-                              </ul>
-                            </div>
-                          </nav>
-                    {% endif %}
-		</div>
-							
-		<div class="wrapper">
-			<div class="main">				
-				<h3 class="mb-4" >SignUp for a free account</h3>
-                <p>Select the type of account you want to create below:</p>
-                <a class="text-white" href="{% url "student_signup" %}">       
-                    <button class="btn btn-primary mr-2 pl-3 pr-3 mb-4">Student</button>
-                </a>
+{% extends "registration/base.html" %}
+{% block content %}
 
-                <a class="text-white" href="{% url "supervisor_signup" %}">
-                <button class="btn btn-info mb-4"> Supervisor</button>
-                </a>
-			</div>		
-		</div>
-	</div>		
-</body>
-</html>
+<h3 class="mb-4"> <b> Sign Up for a free account</b></h3>
+<p>Select the type of account you want to create below:</p>
+<a class="text-white" href="{% url "student_signup" %}">
+  <button class="btn btn-primary mr-2 pl-3 pr-3 mb-4">Student</button>
+</a>
+
+<a class="text-white" href="{% url "supervisor_signup" %}">
+  <button class="btn btn-success mb-4"> Supervisor</button>
+</a>
+</div>
+
+{% endblock %}

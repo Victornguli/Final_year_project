@@ -1,116 +1,55 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Registration</title>
-	<link rel="stylesheet" href="{% static "/core/bootstrap/css/bootstrap.min.css" %}">
-	<link rel="stylesheet" href="{% static "/core/css/main.css" %}">
-</head>
-<body>
-	<div class="container">
-            <div>
-                    <h1 class="text-center text-primary">Chuka University</h1>
-                    {% if user.is_authenticated %}
-                    <nav class="navbar navbar-expand-lg navbar-light ">
-                        <a class="navbar-brand" href="{% url "index" %}"><h4>Student Project Management System</h4></a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                          <span class="navbar-toggler-icon"></span>
-                        </button>
-                      
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                          <ul class="navbar-nav mr-auto">
-                          </ul>
-            
-                          <ul class="navbar-nav ml-auto">
-                            <li class="nav-item ">
-                              <a class="nav-link" href="{% url "index" %}">Home <span class="sr-only">(current)</span></a>
-                            </li>
-                            <li class="nav-item active">
-                              <a class="nav-link" href="{% url "projects" %}">Past Projects
-                                <span class="sr-only">(current)</span>
-                            </a>
-                            </li>                                  
-                            <!-- <li class="nav-item">
-                                <a href="{% url "login" %}" class="nav-link" id="login">Log in</a>
-                            </li> -->
-                            <li class="nav-item" id="signup">
-                              <a class="nav-link" href="{% url "logout" %}">Logout
-                              </a>                           
-                            </li>                          
-                          </ul>
-                        </div>
-                      </nav>                    
-                    {% else %}
-                    <nav class="navbar navbar-expand-lg navbar-light ">
-                            <a class="navbar-brand" href="{% url "index" %}"><h4>Student Project Management System</h4></a>
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                              <span class="navbar-toggler-icon"></span>
-                            </button>
-                          
-                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                              <ul class="navbar-nav mr-auto">
-                              </ul>
-                
-                              <ul class="navbar-nav ml-auto">
-                                <li class="nav-item ">
-                                  <a class="nav-link" href="{% url "index" %}">Home <span class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="nav-item active">
-                                  <a class="nav-link" href="{% url "projects" %}">Past Projects
-                                    <span class="sr-only">(current)</span>
-                                </a>
-                                </li>                                  
-                                <li class="nav-item">
-                                    <a href="{% url "login" %}" class="nav-link" id="login">Log in</a>
-                                </li>
-                                <li class="nav-item" id="signup">
-                                  <a class="nav-link" href="{% url "signup" %}">Register
-                                  </a>                           
-                                </li>                          
-                              </ul>
-                            </div>
-                          </nav>
-                    {% endif %}
-		</div>
-							
-		<div class="wrapper">
-			<div class="main">
-					<div id="signup">
-							<div class="mt-3 mb-3">
-								{% if "/accounts/signup/student/" == request.path %}
-								<h3> <b>Student Registration</b></h3>
-								{% else %}
-								<h3> <b>Supervisor Registration</b></h3>	
-								{% endif %}
-							</div>
-								<!-- <form action="" method="POST">
-							
-									{% csrf_token %}
-									
-									{{ form }}
-							
-									<input type="submit" value="register">
-								</form> -->
-								<form action="" method="POST">
-									{% csrf_token %}
-									{% for field in form %}
-									<div>
-									<div class="label">{{ field.label_tag }}</div>
-									<div class="field mb-4 ">{{ field }}</div>
-									{% for error in field.errors %}
-									<div>
-										<div class="alert alert-danger" style="width:100%; text-align:left">{{ error }}</div>
-									</div>
-									{% endfor %}
-									</div>
-									{% endfor %}
+{% extends "registration/base.html" %}
+{% block content %}
+<div id="signup">
+  <div class="w-75 m-auto text-left">
+    {% if "/accounts/signup/student/" == request.path %}
+    <h4 class="mb-5"> <b>Student Registration</b></h4>
+    <form action="{% url "student_signup" %}" method="POST">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="w-75 text-left m-auto">
+        <div class="mb-3">
+          <span class="label">{{ field.label_tag }}</span>
+          <div class="field float-right">{{ field }}</div>
+        </div>
+        {% for error in field.errors %}
+        <div>
+          <div class="alert alert-danger" style="width:100%; text-align:left">{{ error }}</div>
+        </div>
+        {% endfor %}
+  
+      </div>
+      {% endfor %}
+      <!-- <input type="submit" value="Sign Up"> -->
+      <div class="w-75 m-auto text-left">
+        <button class="btn btn-success pl-4 pr-4" type="submit">Sign Up</button>
+      </div>
+    </form>    
+    {% else %}
+    <h4 class="mb-5"> <b>Supervisor Registration</b></h4>
+    <form action="{% url "supervisor_signup" %}" method="POST">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="w-75 text-left m-auto">
+        <div class="mb-3">
+          <span class="label">{{ field.label_tag }}</span>
+          <div class="field float-right">{{ field }}</div>
+        </div>
+        {% for error in field.errors %}
+        <div>
+          <div class="alert alert-danger" style="width:100%; text-align:left">{{ error }}</div>
+        </div>
+        {% endfor %}
+  
+      </div>
+      {% endfor %}
+      <!-- <input type="submit" value="Sign Up"> -->
+      <div class="w-75 m-auto text-left">
+        <button class="btn btn-success pl-4 pr-4" type="submit">Sign Up</button>
+      </div>
+    </form>    
+    {% endif %}
+  </div>
+</div>
 
-									<button class="btn btn-success"	type="submit">Sign Up</button>
-									<!-- <input type="submit" value="Sign Up"> -->
-								</form>
-				</div>								
-			</div>		
-		</div>
-	</div>		
-</body>
-</html>
+{% endblock %}

@@ -17,17 +17,20 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from core.views import SignUp, StudentSignUp, SupervisorSignUp, Index, PastProjets
+from core.views import *
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", Index, name="index"),
+    path("", Index, name="home"),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("accounts/signup/", SignUp, name="signup"),
+    path("accounts/signup/", SignUp, name="select-signup"),
     path("accounts/signup/student/", StudentSignUp.as_view(), name = "student_signup" ),
     path("accounts/signup/supervisor/", SupervisorSignUp.as_view(), name = "supervisor_signup"),
-    path("past-projects/", PastProjets, name="projects"),
+    path("appointments/request-appointment", RequestAppointment , name="request-appointment"),
+    path("appointments/select_days", SelectAvailableDays , name="select_days"),
+    path("appointments/view_days", ViewAvailableDays , name="view_days"),
+    # path("past-projects/", PastProjets, name="projects"),
     # path("accounts/login",include("django.auth.urls")),
 
 ]

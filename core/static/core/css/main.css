@@ -7,42 +7,29 @@ body{
 .navbar {
     width: 100%;
     margin: auto;
-    /* background-color: rgb(129, 128, 128);
-    color: white; */
 }
 
 .navbar .navbar-brand{
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-.navbar  #login{
-    background-color: whitesmoke;
+.navbar  .nav-item .nav-link{
     color: black;
     border-radius: 3px;
     margin: 0px 5px 0px 5px;
-    padding-left: 20px;
-    padding-right: 20px;
-
-
+    padding-left: 10px;
+    padding-right: 10px
 }
 
-.navbar  #login:hover{
-    background-color: #ffffff;
-}
-
-.navbar  #signup{
-    background-color: rgb(69, 93, 233);
-    color: black;
-    border-radius: 3px;
-    margin: 0px 5px 0px 5px;
-    padding-left: 15px;
-    padding-right: 15px
+.navbar  .nav-item .nav-link:hover{
+    color: white;
+    background-color: rgb(48, 48, 48);
 }
 
 .wrapper{
     width: 100%;
     margin: auto;
-    background-color: whitesmoke;
+    /* background-color: whitesmoke; */
     padding:50px 20px 20px 20px;
     border-radius: 5px;
 }
