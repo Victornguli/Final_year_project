@@ -57,33 +57,66 @@ class SupervisorSignUp(CreateView):
 
 def RequestAppointment(request):
     form = CreateAppointmentForm(request.POST) 
-    if form.is_valid():
-        user = request.user
+    user = request.user
+    supervisor = user.student.supervisor  
+    available_days = AvailableDay.objects.filter(supervisor_id = supervisor.id)
+    if form.is_valid():  
         date = form.cleaned_data.get("date")
         time = form.cleaned_data.get("time")
-        appointment = Appointment.objects.create(date=date, time=time, student_id= user.student.id)
-        print ("Appointment Saved")
-        return render(request, 'core/request-appointment.html',{"form":form})
+        appointment = Appointment.objects.create(date=date, time=time, student_id= user.student.id, supervisor_id = supervisor.id)
+        return render(request, 'core/request_appointment.html',{"form":form, "available_days":available_days, "supervisor":supervisor})
 
     
-    return render(request,'core/request-appointment.html',{"form":form})
+    return render(request,'core/request_appointment.html',{"form":form, "available_days":available_days, "supervisor":supervisor})
         # return render(request, "core/request-appointment.html")
-
 
 def SelectAvailableDays(request):
     form =  SelectAvailableDaysForm(request.POST)
+    user = request.user
+    exists = AvailableDay.objects.filter(supervisor_id = user.supervisor).count()
+    print (exists)
     if form.is_valid():
-        days = form.cleaned_data.get("day")
-        time = form.cleaned_data.get("time")
+        monday = form.cleaned_data.get("monday")
+        tuesday = form.cleaned_data.get("tuesday")
+        wednesday = form.cleaned_data.get("wednesday")
+        thursday = form.cleaned_data.get("thursday")
+        friday = form.cleaned_data.get("friday")
+        saturday = form.cleaned_data.get("saturday")
+        sunday = form.cleaned_data.get("sunday")
 
-        available_day = AvailableDay.objects.create(day=days, time=time)
+        supervisor = user.supervisor
 
-        return render(request, "core/request-appointment.html" , {"form2":form})
-    return render(request, "core/request-appointment.html" , {"form2":form})    
+        if exists < 1:
+            available_day = AvailableDay.objects.create(monday=monday, tuesday=tuesday, wednesday=wednesday, thursday=thursday, friday=friday, saturday=saturday, sunday=sunday,supervisor=supervisor)
+        else:
+            pass
+
+        return render(request, "core/select_available.html" , {"form2":form})
+    return render(request, "core/select_available.html" , {"form2":form})    
 
 
 def ViewAvailableDays(request):
     days = AvailableDay.objects.all()
     appointments = Appointment.objects.all()
     students = Student.objects.all()
-    return render(request, "core/request-appointment.html" , {"days":days, "appointments":appointments, "students":students })    
+    return render(request, "core/request-appointment.html" , {"days":days, "appointments":appointments, "students":students })   
+
+
+def ViewAppointments(request):
+    days = AvailableDay.objects.all()
+    appointments = Appointment.objects.all()
+    students = Student.objects.all() 
+    return render(request, "core/appointments.html" , {"days":days, "appointments":appointments, "students":students })     
+
+
+def ApproveAppointment(request, appointment_id):
+    appointment = Appointment.objects.get(pk = appointment_id)
+    appointment.approved = "Approved"
+    appointment.save()
+    return redirect("appointments")
+
+def RejectAppointment(request, appointment_id):
+    appointment = Appointment.objects.get(pk = appointment_id)
+    appointment.approved = "Rejected"
+    appointment.save()
+    return redirect("appointments")

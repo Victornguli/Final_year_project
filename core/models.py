@@ -42,25 +42,30 @@ class Student(models.Model):
     status = models.BooleanField(default=True)
 
 class AvailableDay(models.Model):
-    DAYS_OF_WEEK = (
-    (0, 'Monday'),
-    (1, 'Tuesday'),
-    (2, 'Wednesday'),
-    (3, 'Thursday'),
-    (4, 'Friday'),
-    (5, 'Saturday'),
-    (6, 'Sunday'),
-    )
-    
-    day = models.CharField(max_length=1, choices=DAYS_OF_WEEK)
-    time = models.TimeField(auto_now=False, auto_now_add=False)
+    monday = models.TimeField(null=True)
+    tuesday = models.TimeField(null=True)
+    wednesday = models.TimeField(null=True)
+    thursday = models.TimeField(null=True)
+    friday = models.TimeField(null=True)
+    saturday = models.TimeField(null=True)
+    sunday = models.TimeField(null=True)
+    supervisor = models.ForeignKey(Supervisor, on_delete=models.CASCADE, null=True)
+
 
 class Appointment(models.Model):
     supervisor = models.ForeignKey(Supervisor, on_delete=models.CASCADE, null=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
     date = models.DateField(auto_now=False, auto_now_add=False)
     time = models.TimeField(auto_now=False, auto_now_add=False)
-    approved = models.BooleanField(default = False)
+
+    Approved = "Approved"
+    Applied = "Applied"
+
+    status = (
+        (Approved,"Approved"),
+        (Applied,"Applied"),
+    )
+    approved = models.CharField(max_length = 10 , choices=status, default="Applied")
 
 class Schedule(models.Model):
     start_date = models.DateField(auto_now_add=False, auto_now=False)

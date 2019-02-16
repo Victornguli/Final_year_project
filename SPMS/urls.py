@@ -27,9 +27,12 @@ urlpatterns = [
     path("accounts/signup/", SignUp, name="select-signup"),
     path("accounts/signup/student/", StudentSignUp.as_view(), name = "student_signup" ),
     path("accounts/signup/supervisor/", SupervisorSignUp.as_view(), name = "supervisor_signup"),
-    path("appointments/request-appointment", RequestAppointment , name="request-appointment"),
+    path("appointments/request_appointment", RequestAppointment , name="request_appointment"),
     path("appointments/select_days", SelectAvailableDays , name="select_days"),
-    path("appointments/view_days", ViewAvailableDays , name="view_days"),
+    path("appointments/view_appointments", ViewAppointments , name="appointments"),
+    path("appointments/approve_appointment(<appointment_id>[0-9]+)",ApproveAppointment, name="approve_appointment"),
+    path("appointments/reject_appointment(<appointment_id>[0-9]+)", RejectAppointment , name="reject_appointment"),
+
     # path("past-projects/", PastProjets, name="projects"),
     # path("accounts/login",include("django.auth.urls")),
 

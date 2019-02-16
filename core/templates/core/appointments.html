@@ -1,0 +1,169 @@
+
+{% extends "core/base.html" %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+{% if user.is_supervisor %}
+
+<h5 class="mb-2">Logged in as a Supervisor</h5>
+<div class="row bg-secondary pt-2 pb-2">
+    <div class="col-3"></div>
+    <div class="col-3"></div>
+    <div class="col-2"></div>
+    <div class="col-2"> <a style="color: white" href="{% url  "select_days" %}">Set Appointment Time</a></div>
+    <div class="col-2"><a style="color: white" href="{% url  "appointments" %}">Appointments</a></div>
+</div> 
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+    Open modal
+  </button>
+
+  <!-- The Modal -->
+  <div class="modal" id="myModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Modal Heading</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          Modal body..
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        
+      </div>
+    </div>
+</div>
+
+
+
+<div class="w-100 m-auto text-left">
+
+    <table class="table w-100">
+        <h5>Available Appointment Time Slots</h5>
+        <th>Day</th>
+        <th>Time slot</th>
+        {% for day in days %}
+        <tr>
+            <td>Monday </td>
+            <td>{{ day.monday }}</td>
+        </tr>    
+        <tr>
+            <td>Tuesday</td>
+            <td>{{ day.tuesday }}</td>
+        </tr>     
+        <tr>
+            <td>Wednesday</td>
+            <td>{{ day.wednesday }}</td>
+        </tr>      
+        <tr>
+            <td>Thursday</td>
+            <td>{{ day.thursday }}</td>
+        </tr>       
+        <tr>
+            <td>Friday</td>
+            <td>{{ day.friday }}</td>
+        </tr>    
+        <tr>
+            <td>Saturday</td>
+            <td>{{ day.saturday }}</td>
+        </tr>            
+        <tr>
+            <td>Sunday</td>
+            <td>{{ day.sunday }}</td>
+        </tr>                        
+        {% endfor %}
+
+    </table>
+
+    <table class="table">
+        <h5 class="mt-5 mb-3">Appointments</h5>
+        <th>Sent By</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Status</th>
+        {% for appointment in appointments %}
+        {% for student in students %}
+        {% if student.id == appointment.student_id %}
+        <tr>
+            <td>{{ student.first_name }}</td>
+            <td>{{ appointment.date }}</td>
+            <td>{{ appointment.time }}</td>
+            <td>{{ appointment.approved }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+    </table>
+
+    <table class="table">
+        <h5 class="mt-5 mb-3">Pending Appointments</h5>
+        <th>Sent By</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Status</th>
+        {% for appointment in appointments %}
+        {% for student in students %}
+        {% if student.id == appointment.student_id %}
+        {% if appointment.approved != "APRD" %}
+        {% if appointment.approved != "Rejected" %}
+        <tr>
+            <td>{{ student.first_name }}</td>
+            <td>{{ appointment.date }}</td>
+            <td>{{ appointment.time }}</td>
+            <td>
+                <span class="ml-2">{{ appointment.approved }} - </span>
+                <a href="{% url "approve_appointment" appointment.id %}"><button class="btn btn-dark pt-0 pb-0 ml-3 mr-2">Approve</button></a>
+                <a href="{% url "reject_appointment" appointment.id %}"><button class="btn btn-dark pt-0 pb-0 ml-3 mr-2">Reject</button></a>
+            </td>
+        </tr>
+        {% endif %}
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+    </table>
+
+    </div>    
+
+{% else %}
+
+<!-- Logged in as a Student -->
+<h5 class="mb-2">Logged in as a student</h5>
+<div class="row bg-secondary pt-2 pb-2">
+    <div class="col-3"></div>
+    <div class="col-3"></div>
+    <div class="col-2"></div>
+    <div class="col-2"> <a style="color: white" href="{% url  "request_appointment" %}">Request Appoinment</a></div>
+    <div class="col-2"><a style="color: white" href="{% url  "appointments" %}">Pending Appointments</a></div>
+</div>
+<table class="table">
+    <h5 class="mt-5 mb-3">Requested Appointments</h5>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Status</th>
+    {% for appointment in appointments %}
+    {% if user.student.id == appointment.student_id %}
+    <tr>
+        <td>{{ appointment.date }}</td>
+        <td>{{ appointment.time }}</td>
+        <td>{{ appointment.approved }}</td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+
+{% endif %}
+
+{% endif %}
+
+
+{% endblock %}

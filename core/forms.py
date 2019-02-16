@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 
-from core.models import User, Student, Supervisor, Appointment
+from core.models import *
 
 
 class StudentSignUpForm(UserCreationForm):
@@ -63,15 +63,10 @@ class CreateAppointmentForm(forms.Form):
     time = forms.DateTimeField(widget = forms.DateTimeInput)
 
 class SelectAvailableDaysForm(forms.Form):
-    DAYS_OF_WEEK = (
-    (0, 'Monday'),
-    (1, 'Tuesday'),
-    (2, 'Wednesday'),
-    (3, 'Thursday'),
-    (4, 'Friday'),
-    (5, 'Saturday'),
-    (6, 'Sunday'),
-    )
-    
-    day = forms.ChoiceField(choices=DAYS_OF_WEEK)
-    time = forms.TimeField()
+    monday = forms.TimeField(required=False)
+    tuesday = forms.TimeField(required=False)
+    wednesday = forms.TimeField(required=False)
+    thursday = forms.TimeField(required=False)
+    friday = forms.TimeField(required=False)
+    saturday = forms.TimeField(required=False)
+    sunday = forms.TimeField(required=False)

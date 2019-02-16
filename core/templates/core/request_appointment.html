@@ -2,11 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
-  <link rel="stylesheet" href="{% static "/core/bootstrap/css/bootstrap.min.css" %}">
-	<script src="{% static "/core/bootstrap/js/bootstrap.min.js" %}"></script>
-	<script src="{% static "/core/js/jquery.min.js" %}"></script>
-  <link rel="stylesheet" href="{% static "/core/css/main.css" %}">
+	<title>Login</title>
+	<link rel="stylesheet" href="{% static "/core/bootstrap/css/bootstrap.min.css" %}">
+	<link rel="stylesheet" href="{% static "/core/css/main.css" %}">
 </head>
 <body>
 	<div class="container">
@@ -75,10 +73,86 @@
 		</div>
 							
 		<div class="wrapper">
-			<div class="main">
-				{% block content %}
-
-				{% endblock %}
+			<div class="main w-100">
+                {% if user.is_authenticated %}
+                {% if user.is_student %}
+                <h5 class="mb-2">Logged in as a student</h5>
+                <div class="row bg-secondary pt-2 pb-2">
+                    <div class="col-3"></div>
+                    <div class="col-3"></div>
+                    <div class="col-2"></div>
+                    <div class="col-2"> <a style="color: white" href="{% url  "request_appointment" %}">Request Appoinment</a></div>
+                    <div class="col-2"><a style="color: white" href="{% url  "appointments" %}">Pending Appointments</a></div>
+                </div>               
+                <table class="table" class="w-100">
+                    <h5 class="mt-3">Available Days and Time Slots for supervision by {{ user.student.supervisor_id }} {{ supervisor.last_name }}</h5>
+                    <th>Day</th>
+                    <th>Time slot</th>
+                    {% for day in available_days %}
+                    <tr>
+                        <td>Monday </td>
+                        <td>{{ day.monday }}</td>
+                    </tr>
+                  
+                    <tr>
+                        <td>Tuesday</td>
+                        <td>{{ day.tuesday }}</td>
+                    </tr>
+                   
+                    <tr>
+                        <td>Wednesday</td>
+                        <td>{{ day.wednesday }}</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Thursday</td>
+                        <td>{{ day.thursday }}</td>
+                    </tr>        
+                    
+                    <tr>
+                        <td>Friday</td>
+                        <td>{{ day.friday }}</td>
+                    </tr>        
+                   
+                    <tr>
+                        <td>Saturday</td>
+                        <td>{{ day.saturday }}</td>
+                    </tr>        
+                    
+                    <tr>
+                        <td>Sunday</td>
+                        <td>{{ day.sunday }}</td>
+                    </tr>                        
+                {% endfor %}
+                </table>
+                
+                <div id="request-appointment" class="w-100 mt-5 mb-5">
+                    <h5 class="mb-3">Request Appointment</h5>
+                    <form action="{% url "request_appointment" %}" method="POST">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="w-100 text-left m-auto">
+                        <div class="mb-3">
+                          <span class="label mr-5">{{ field.label_tag }}</span>
+                          <span class="field ml-5">{{ field }}</span>
+                        </div>
+                        {% for error in field.errors %}
+                        <div>
+                          <div class="alert alert-danger" style="width:100%; text-align:left">{{ error }}</div>
+                        </div>
+                        {% endfor %}
+      
+                        </div>
+                        {% endfor %}
+                        <!-- <input type="submit" value="Sign Up"> -->
+                        <div class="w-100 m-auto text-left">
+                            <button class="btn btn-success pl-4 pr-4"	type="submit">Submit</button>
+                        </div>
+                      </form> 
+                </div>
+                {% endif %}
+                  <!-- <input type="submit" value="Sign Up"> -->                       
+                {% endif %}
 			</div>		
 		</div>
 	</div>		
