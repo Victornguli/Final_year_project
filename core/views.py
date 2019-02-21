@@ -54,7 +54,6 @@ class SupervisorSignUp(CreateView):
 # def PastProjets(request):
 #     return render(request, "core/projects.html")
 
-
 def RequestAppointment(request):
     form = CreateAppointmentForm(request.POST) 
     user = request.user
@@ -83,7 +82,6 @@ def SelectAvailableDays(request):
         friday = form.cleaned_data.get("friday")
         saturday = form.cleaned_data.get("saturday")
         sunday = form.cleaned_data.get("sunday")
-
         supervisor = user.supervisor
 
         if exists < 1:
@@ -99,7 +97,7 @@ def ViewAvailableDays(request):
     days = AvailableDay.objects.all()
     appointments = Appointment.objects.all()
     students = Student.objects.all()
-    return render(request, "core/request-appointment.html" , {"days":days, "appointments":appointments, "students":students })   
+    return render(request, "core/request_appointment.html" , {"days":days, "appointments":appointments, "students":students })   
 
 
 def ViewAppointments(request):
@@ -107,7 +105,6 @@ def ViewAppointments(request):
     appointments = Appointment.objects.all()
     students = Student.objects.all() 
     return render(request, "core/appointments.html" , {"days":days, "appointments":appointments, "students":students })     
-
 
 def ApproveAppointment(request, appointment_id):
     appointment = Appointment.objects.get(pk = appointment_id)
@@ -120,3 +117,39 @@ def RejectAppointment(request, appointment_id):
     appointment.approved = "Rejected"
     appointment.save()
     return redirect("appointments")
+
+def SetSchedule(request):
+    form = SetScheduleForm(request.POST)
+    
+    if form.is_valid():
+        start_date = form.cleaned_data.get("start_date")
+        end_date = form.cleaned_data.get("end_date")
+        schedule = Schedule.objects.create(start_date=start_date, end_date=end_date)
+
+    return render(request, "core/coordinator.html", {"form":form})
+
+def SetMilestones(request):
+    form = SetMilestoneForm(request.POST)
+
+    if form.is_valid():
+        milestone = form.cleaned_data.get("milestone")
+        start_date = form.cleaned_data.get("start_date")
+        end_date = form.cleaned_data.get("end_date")
+        milestone = Milestone.objects.create(milestone=milestone, start_date=start_date, end_date=end_date)
+    
+    return render(request, "core/coordinator.html", {"form2":form})
+
+def UpdateProfile(request):
+    return render(request, "core/profile.html")
+
+def StudentProject(request):
+    user = request.user
+    schedule = user.student.project.schedule
+    milestones = Milestone.objects.filter(schedule_id=schedule.id)
+    for milestone in milestones:
+        remaining_days = milestone.end_date - milestone.start_date
+    print (remaining_days)
+    return render(request,"core/project/project_progress.html", {"milestones":milestones, "student":user.student,"remaining_days":remaining_days})
+
+
+

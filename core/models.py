@@ -5,18 +5,25 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
+class Schedule(models.Model):
+    schedule_name = models.CharField(max_length = 100, default="")
+    start_date = models.DateField(auto_now_add=False, auto_now=False)
+    end_date = models.DateField(auto_now_add=False, auto_now=False)
+
+    def __str__(self):
+        return self.schedule_name
+
 class Project(models.Model):
     title = models.CharField(max_length=50,default="title")
     status = models.BooleanField(default = True)
     start_date = models.DateField(auto_now=False, auto_now_add=True)
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
-
-class PastProjects(models.Model):
-    project = models.OneToOneField(Project, on_delete=models.CASCADE)
-
+class PastProject(models.Model):
+    past_project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 class User(AbstractUser):
     is_student = models.BooleanField("student_status",default=False)
@@ -28,6 +35,9 @@ class Supervisor(models.Model):
     first_name = models.CharField(max_length=20, default="")
     last_name = models.CharField(max_length=20, default="")
     email = models.EmailField(max_length=255,  default="")
+
+    def __str__(self):
+        return self.first_name + " " + self.last_name   
 
 
 class Student(models.Model):
@@ -41,6 +51,9 @@ class Student(models.Model):
     project = models.OneToOneField(Project, on_delete=models.CASCADE, null=True)
     status = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.first_name + " " + self.last_name
+
 class AvailableDay(models.Model):
     monday = models.TimeField(null=True)
     tuesday = models.TimeField(null=True)
@@ -50,6 +63,10 @@ class AvailableDay(models.Model):
     saturday = models.TimeField(null=True)
     sunday = models.TimeField(null=True)
     supervisor = models.ForeignKey(Supervisor, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.supervisor.first_name + " " + self.supervisor.last_name
+
 
 
 class Appointment(models.Model):
@@ -67,14 +84,18 @@ class Appointment(models.Model):
     )
     approved = models.CharField(max_length = 10 , choices=status, default="Applied")
 
-class Schedule(models.Model):
-    start_date = models.DateField(auto_now_add=False, auto_now=False)
-    end_date = models.DateField(auto_now_add=False, auto_now=False)
 
 class Milestone(models.Model):
     Not_Started = "NS"
     Ongoing = "ON"
     Finished = "FN"
+    first_semester = "S1"
+    second_semester = "S2"
+
+    milestone_group = (
+        (first_semester, "Semester One"),
+        (second_semester, "Semester Two"),
+    )
 
     milestone_status = (
         (Not_Started, "Not Started"),
@@ -82,9 +103,14 @@ class Milestone(models.Model):
         (Finished, "Finished"),
     )
 
-    milestone = models.CharField(max_length=100)
+    milestone_name = models.CharField(max_length=100)
     start_date = models.DateField(auto_now_add=False, auto_now=False)
     end_date = models.DateField(auto_now_add=False, auto_now=False)
-    status = models.CharField(max_length=2, choices=milestone_status)
+    status = models.CharField(max_length=2, choices=milestone_status, default="NS")
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+    group = models.CharField(choices=milestone_group, default = "S1", max_length=2)
+
+    def __str__(self):
+        return self.milestone_name, self.start_date    
 
 

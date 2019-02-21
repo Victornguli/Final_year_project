@@ -1,0 +1,64 @@
+{% extends  "core/base.html" %}
+
+{% block content %}
+
+{% if user.is_superuser %}
+
+<h5 class="mb-2">Logged in as a Coordinator</h5>
+<div class="row bg-secondary pt-2 pb-2 mb-3">
+    <div class="col"></div>
+    <div class="col"></div>
+    <div class="col"></div>
+    <div class="col text-right"><a style="color: white" href="{% url  "set_schedule" %}">Set Schedule</a></div>
+    <div class="col text-right"><a style="color: white" href="{% url  "appointments" %}">Set Project Milestones</a></div>
+    <div class="col"><a style="color: white" href="{% url  "appointments" %}">Project</a></div>
+</div>
+
+<div class="m-auto">
+    <form action="{% url "set_schedule" %}" method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="w-100 text-left m-auto">
+        <div class="mb-3">
+          <span class="label mr-5">{{ field.label_tag }}</span>
+          <span class="field ml-5">{{ field }}</span>
+        </div>
+        {% for error in field.errors %}
+        <div>
+          <div class="alert alert-danger" style="width:100%; text-align:left">{{ error }}</div>
+        </div>
+        {% endfor %}
+
+        </div>
+        {% endfor %}
+        <!-- <input type="submit" value="Sign Up"> -->
+        <div class="w-100 m-auto text-left">
+            <button class="btn btn-success pl-4 pr-4"	type="submit">Submit</button>
+        </div>
+      </form> 
+
+      <form action="{% url "set_milestone" %}" method="POST">
+        {% csrf_token %}
+        {% for field in form2 %}
+        <div class="w-100 text-left m-auto">
+        <div class="mb-3">
+          <span class="label mr-5">{{ field.label_tag }}</span>
+          <span class="field ml-5">{{ field }}</span>
+        </div>
+        {% for error in field.errors %}
+        <div>
+          <div class="alert alert-danger" style="width:100%; text-align:left">{{ error }}</div>
+        </div>
+        {% endfor %}
+
+        </div>
+        {% endfor %}
+        <!-- <input type="submit" value="Sign Up"> -->
+        <div class="w-100 m-auto text-left">
+            <button class="btn btn-success pl-4 pr-4"	type="submit">Submit</button>
+        </div>
+      </form> 
+</div>
+{% endif %}
+
+{% endblock %}

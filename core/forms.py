@@ -70,3 +70,12 @@ class SelectAvailableDaysForm(forms.Form):
     friday = forms.TimeField(required=False)
     saturday = forms.TimeField(required=False)
     sunday = forms.TimeField(required=False)
+
+class SetScheduleForm(forms.Form):
+    start_date = forms.DateField(required="False")
+    end_date = forms.DateField(required="False")
+
+class SetMilestoneForm(forms.Form):
+    milestone = forms.CharField()
+    start_date = forms.DateField(required="False")
+    end_date = forms.DateField(required="False")

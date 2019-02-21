@@ -1,0 +1,55 @@
+{% extends "core/logged_base.html" %} 
+
+{% block content %}
+
+{% if user.is_authenticated %}
+{% if user.is_student %}
+
+<div class="main">
+    <h5 class="mb-2">Logged in as student</h5>
+    <div class="row logged_menu pt-2 pb-2 mb-3">
+        <div class="col-3"></div>
+        <div class="col-3"></div>
+        <div class="col-2"></div>
+        <div class="col-2"> <a style="color: white" href="{% url  "request_appointment" %}">Request Appoinment</a></div>
+        <div class="col-2"><a style="color: white" href="{% url  "appointments" %}">Pending Appointments</a></div>
+    </div>    
+    <p>first name<input type="text" value="{{ user.student.first_name }}"></p>
+    <p>last name<input type="text" value="{{ user.student.last_name }}"></p>
+    <p>user name<input type="text" value="{{ user.username }}"></p>
+    <p>email<input type="text" value="{{ user.student.email }}"></p>
+    <p>Course of Study 
+        <select>
+            <option value="ACMP">Applied Computer Science</option>
+            <option value="CS">Computer Science</option>
+        </select>
+    </p>
+    <p>Registration Number <input type="text" value="{{ user.student.reg_number }}"></p>
+</div>
+
+{% else %}
+<div class="main">
+    <h5 class="mb-2">Logged in as supervisor</h5>
+    <div class="row logged_menu pt-2 pb-2 mb-3">
+        <div class="col-3"></div>
+        <div class="col-3"></div>
+        <div class="col-2"></div>
+        <div class="col-2"> <a style="color: white" href="{% url  "request_appointment" %}">Request Appoinment</a></div>
+        <div class="col-2"><a style="color: white" href="{% url  "appointments" %}">Pending Appointments</a></div>
+    </div>    
+    <p>first name<input type="text" value="{{ user.supervisor.first_name }}"></p>
+    <p>last name<input type="text" value="{{ user.supervisor.last_name }}"></p>
+    <p>user name<input type="text" value="{{ user.username }}"></p>
+    <p>email<input type="text" value="{{ user.supervisor.email }}"></p>
+    <!-- <p>Course of Study 
+        <select>
+            <option value="ACMP">Applied Computer Science</option>
+            <option value="CS">Computer Science</option>
+        </select>
+    </p> -->
+    <!-- <p>Registration Number <input type="text" value="{{ user.student.reg_number }}"></p> -->
+</div>
+{% endif %}
+{% endif %}
+
+{% endblock %}

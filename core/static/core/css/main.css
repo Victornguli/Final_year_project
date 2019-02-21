@@ -29,15 +29,15 @@ body{
 .wrapper{
     width: 100%;
     margin: auto;
-    /* background-color: whitesmoke; */
+    background-color: whitesmoke;
     padding:50px 20px 20px 20px;
     border-radius: 5px;
 }
 
-.main{
+/* .main{
     width: 100%;
     margin: auto;
-}
+} */
 
 #intro{
     margin-top: 10px;
@@ -148,4 +148,10 @@ body{
 
 .table tr:nth-child(even){
     background-color: #ececec;
+}
+
+.logged_menu{
+    background-color: #79aec8;
+    color: white;
+    opacity: 1.5;
 }

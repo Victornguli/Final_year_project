@@ -1,160 +1,86 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Login</title>
-	<link rel="stylesheet" href="{% static "/core/bootstrap/css/bootstrap.min.css" %}">
-	<link rel="stylesheet" href="{% static "/core/css/main.css" %}">
-</head>
-<body>
-	<div class="container">
-            <div>
-                    {% if user.is_authenticated %}
-                    <nav class="navbar navbar-expand-lg navbar-light ">
-                        <a class="navbar-brand" href="{% url "home" %}"><h4>Student Project Management System</h4></a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                          <span class="navbar-toggler-icon"></span>
-                        </button>
-                      
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                          <ul class="navbar-nav mr-auto">
-                          </ul>
-            
-                          <ul class="navbar-nav ml-auto">
-                            <li class="nav-item ">
-                              <a class="nav-link" href="{% url "home" %}">Home <span class="sr-only">(current)</span></a>
-                            </li>
-                            <li class="nav-item active">
-                              <a class="nav-link" href="{% url "home" %}">Past Projects
-                                <span class="sr-only">(current)</span>
-                            </a>
-                            </li>                                  
-                            <!-- <li class="nav-item">
-                                <a href="{% url "login" %}" class="nav-link" id="login">Log in</a>
-                            </li> -->
-                            <li class="nav-item" id="signup">
-                              <a class="nav-link" href="{% url "logout" %}">Logout
-                              </a>                           
-                            </li>                          
-                          </ul>
-                        </div>
-                      </nav>                    
-                    {% else %}
-                    <nav class="navbar navbar-expand-lg navbar-light ">
-                            <a class="navbar-brand" href="{% url "home" %}"><h4>Student Project Management System</h4></a>
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                              <span class="navbar-toggler-icon"></span>
-                            </button>
-                          
-                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                              <ul class="navbar-nav mr-auto">
-                              </ul>
-                
-                              <ul class="navbar-nav ml-auto">
-                                <li class="nav-item ">
-                                  <a class="nav-link" href="{% url "home" %}">Home <span class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="nav-item active">
-                                  <a class="nav-link" href="{% url "home" %}">Past Projects
-                                    <span class="sr-only">(current)</span>
-                                </a>
-                                </li>                                  
-                                <li class="nav-item">
-                                    <a href="{% url "login" %}" class="nav-link" id="login">Log in</a>
-                                </li>
-                                <li class="nav-item" id="signup">
-                                  <a class="nav-link" href="{% url "signup" %}">Register
-                                  </a>                           
-                                </li>                          
-                              </ul>
-                            </div>
-                          </nav>
-                    {% endif %}
-		</div>
-							
-		<div class="wrapper">
-			<div class="main w-100">
-                {% if user.is_authenticated %}
-                {% if user.is_student %}
-                <h5 class="mb-2">Logged in as a student</h5>
-                <div class="row bg-secondary pt-2 pb-2">
-                    <div class="col-3"></div>
-                    <div class="col-3"></div>
-                    <div class="col-2"></div>
-                    <div class="col-2"> <a style="color: white" href="{% url  "request_appointment" %}">Request Appoinment</a></div>
-                    <div class="col-2"><a style="color: white" href="{% url  "appointments" %}">Pending Appointments</a></div>
-                </div>               
-                <table class="table" class="w-100">
-                    <h5 class="mt-3">Available Days and Time Slots for supervision by {{ user.student.supervisor_id }} {{ supervisor.last_name }}</h5>
-                    <th>Day</th>
-                    <th>Time slot</th>
-                    {% for day in available_days %}
-                    <tr>
-                        <td>Monday </td>
-                        <td>{{ day.monday }}</td>
-                    </tr>
-                  
-                    <tr>
-                        <td>Tuesday</td>
-                        <td>{{ day.tuesday }}</td>
-                    </tr>
-                   
-                    <tr>
-                        <td>Wednesday</td>
-                        <td>{{ day.wednesday }}</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>Thursday</td>
-                        <td>{{ day.thursday }}</td>
-                    </tr>        
-                    
-                    <tr>
-                        <td>Friday</td>
-                        <td>{{ day.friday }}</td>
-                    </tr>        
-                   
-                    <tr>
-                        <td>Saturday</td>
-                        <td>{{ day.saturday }}</td>
-                    </tr>        
-                    
-                    <tr>
-                        <td>Sunday</td>
-                        <td>{{ day.sunday }}</td>
-                    </tr>                        
-                {% endfor %}
-                </table>
-                
-                <div id="request-appointment" class="w-100 mt-5 mb-5">
-                    <h5 class="mb-3">Request Appointment</h5>
-                    <form action="{% url "request_appointment" %}" method="POST">
-                        {% csrf_token %}
-                        {% for field in form %}
-                        <div class="w-100 text-left m-auto">
-                        <div class="mb-3">
-                          <span class="label mr-5">{{ field.label_tag }}</span>
-                          <span class="field ml-5">{{ field }}</span>
-                        </div>
-                        {% for error in field.errors %}
-                        <div>
-                          <div class="alert alert-danger" style="width:100%; text-align:left">{{ error }}</div>
-                        </div>
-                        {% endfor %}
-      
-                        </div>
-                        {% endfor %}
-                        <!-- <input type="submit" value="Sign Up"> -->
-                        <div class="w-100 m-auto text-left">
-                            <button class="btn btn-success pl-4 pr-4"	type="submit">Submit</button>
-                        </div>
-                      </form> 
-                </div>
-                {% endif %}
-                  <!-- <input type="submit" value="Sign Up"> -->                       
-                {% endif %}
-			</div>		
-		</div>
-	</div>		
-</body>
-</html>
+{% extends "core/logged_base.html" %}
+
+{% block content %}
+<div class="main">
+  {% if user.is_authenticated %}
+  {% if user.is_student %}
+  <h5 class="mb-2">Logged in as a student</h5>
+  <div class="row logged_menu pt-2 pb-2">
+    <div class="col-3"></div>
+    <div class="col-3"></div>
+    <div class="col-2"></div>
+    <div class="col-2"> <a style="color: white" href="{% url  "request_appointment" %}">Request Appoinment</a></div>
+    <div class="col-2"><a style="color: white" href="{% url  "appointments" %}">Pending Appointments</a></div>
+  </div>
+  <table class="table w-100">
+    <h5 class="mt-3">Available Days and Time Slots for supervision by {{ user.student.supervisor.first_name }} {{ user.student.supervisor.last_name }}</h5>
+    <th>Day</th>
+    <th>Time slot</th>
+    {% for day in available_days %}
+    <tr>
+      <td>Monday </td>
+      <td>{{ day.monday }}</td>
+    </tr>
+
+    <tr>
+      <td>Tuesday</td>
+      <td>{{ day.tuesday }}</td>
+    </tr>
+
+    <tr>
+      <td>Wednesday</td>
+      <td>{{ day.wednesday }}</td>
+    </tr>
+
+    <tr>
+      <td>Thursday</td>
+      <td>{{ day.thursday }}</td>
+    </tr>
+
+    <tr>
+      <td>Friday</td>
+      <td>{{ day.friday }}</td>
+    </tr>
+
+    <tr>
+      <td>Saturday</td>
+      <td>{{ day.saturday }}</td>
+    </tr>
+
+    <tr>
+      <td>Sunday</td>
+      <td>{{ day.sunday }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <div id="request-appointment" class="w-100 mt-5 mb-5">
+    <h5 class="mb-3">Request Appointment</h5>
+    <form action="{% url "request_appointment" %}" method="POST">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="w-100 text-left m-auto">
+        <div class="mb-3">
+          <span class="label mr-5">{{ field.label_tag }}</span>
+          <span class="field ml-5">{{ field }}</span>
+        </div>
+        {% for error in field.errors %}
+        <div>
+          <div class="alert alert-danger" style="width:100%; text-align:left">{{ error }}</div>
+        </div>
+        {% endfor %}
+
+      </div>
+      {% endfor %}
+      <!-- <input type="submit" value="Sign Up"> -->
+      <div class="w-100 m-auto text-left">
+        <button class="btn btn-success pl-4 pr-4" type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+  {% endif %}
+  {% endif %}
+  <!-- <input type="submit" value="Sign Up"> -->
+</div>
+
+{% endblock %}
