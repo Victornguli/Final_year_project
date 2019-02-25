@@ -4,14 +4,14 @@
 <head>
   <title></title>
   <link rel="stylesheet" href="http://localhost:80/www.w3schools.com/maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://localhost:80/www.w3schools.com/cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="http://localhost:80/www.w3schools.com/ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="http://localhost:80/www.w3schools.com/cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
   <script src="http://localhost:80/www.w3schools.com/maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>  
   <link rel="stylesheet" href="{% static "/core/css/main.css" %}">
 </head>
 <body>
-	<div class="well">
-            <div>
+	<div class="wrap">
                     {% if user.is_authenticated %}
                     <nav class="navbar navbar-expand-lg navbar-light ">
                         <a class="navbar-brand" href="{% url "home" %}"><h4>Student Project Management System</h4></a>
@@ -27,9 +27,8 @@
                             <li class="nav-item ">
                               <a class="nav-link" href="{% url "home" %}">Past Projects</a>
                             </li>
-                            <li class="nav-item active">
-                              <a class="nav-link" href="{% url "student_project" %}">Project
-                                <span class="sr-only">(current)</span>
+                            <li class="nav-item">
+                              <a class="nav-link" href="{% url "project" %}">Project
                             </a>
                             </li>  
                             <li class="nav-item ">
@@ -40,10 +39,7 @@
                             </li>                            
                             <li class="nav-item ">
                                 <a class="nav-link" href="{% url "home" %}">Notifications</a>
-                            </li>                                                                                        
-                            <!-- <li class="nav-item">
-                                <a href="{% url "login" %}" class="nav-link" id="login">Log in</a>
-                            </li> -->
+                            </li>
                             <li class="nav-item" id="signup">
                               <a class="nav-link" href="{% url "logout" %}">Logout
                               </a>                           
@@ -61,12 +57,8 @@
                             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                               <ul class="navbar-nav mr-auto">
                               </ul>
-                
                               <ul class="navbar-nav ml-auto">
-                                <li class="nav-item ">
-                                  <a class="nav-link" href="{% url "home" %}">Home</a>
-                                </li>
-                                <li class="nav-item active">
+                                <li class="nav-item">
                                   <a class="nav-link" href="{% url "home" %}">Past Projects
                                 </a>
                                 </li>                                  
@@ -74,18 +66,16 @@
                                     <a href="{% url "login" %}" class="nav-link" id="login">Log in</a>
                                 </li>
                                 <li class="nav-item" id="signup">
-                                  <a class="nav-link" href="{% url "signup" %}">Register
+                                  <a class="nav-link" href="{% url "select_signup" %}">Register
                                   </a>                           
                                 </li>                          
                               </ul>
                             </div>
                           </nav>
-                    {% endif %}
-		</div>
-							
-		<div class="wrapper">
-			{% block content %}
-
+                    {% endif %}	
+		<div class="main">
+      {% block content %}
+      
 			{% endblock %}	
 		</div>
 	</div>		

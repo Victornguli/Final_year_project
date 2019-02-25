@@ -1,19 +1,22 @@
-{% extends "core/base.html" %}
+{% extends "core/logged_base.html" %}
 
 
 {% block content %}
 
 {% if user.is_authenticated %}
 {% if user.is_supervisor %}
-<h5 class="mb-2">Logged in as a Supervisor</h5>
-<div class="row bg-secondary pt-2 pb-2">
-    <div class="col-3"></div>
-    <div class="col-3"></div>
-    <div class="col-2"></div>
-    <div class="col-2"> <a style="color: white" href="{% url  "select_days" %}">Set Appointment Time</a></div>
-    <div class="col-2"><a style="color: white" href="{% url  "appointments" %}">Appointments</a></div>
+<div class="breadcrumbs">
+    <a href="{% url "home" %}">SPMS</a>
+    &rsaquo;
+    Supervisor
+    &rsaquo;
+    <a href="{% url  "appointments" %}">Appointments</a>
+    &boxv;
+    <a href="{% url  "select_days" %}">Select Available Days</a>
+    <span class="float-right">Logged in as Supervisor</span>    
 </div> 
-<p class="w-75 m-auto pb-4">Select available time slots</p>
+<div class="wrapper">
+<h6 class="w-75 m-auto pb-4">Select available time slots</h6>
 <form action="{% url "select_days" %}" method="POST">
         {% csrf_token %}
         {% for field in form2 %}
@@ -37,5 +40,5 @@
 </form>
 {% endif %}
 {% endif %}
-
+</div>
 {% endblock %}

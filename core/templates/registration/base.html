@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="{% static "/core/css/main.css" %}">
 </head>
 <body>
-	<div class="container">
+	<div class="wrap">
             <div>
                     {% if user.is_authenticated %}
                     <nav class="navbar navbar-expand-lg navbar-light ">
@@ -21,17 +21,11 @@
                           </ul>
             
                           <ul class="navbar-nav ml-auto">
-                            <li class="nav-item ">
-                              <a class="nav-link" href="{% url "home" %}">Home <span class="sr-only">(current)</span></a>
-                            </li>
                             <li class="nav-item active">
                               <a class="nav-link" href="{% url "home" %}">Past Projects
                                 <span class="sr-only">(current)</span>
                             </a>
                             </li>                                  
-                            <!-- <li class="nav-item">
-                                <a href="{% url "login" %}" class="nav-link" id="login">Log in</a>
-                            </li> -->
                             <li class="nav-item" id="logout">
                               <a class="nav-link" href="{% url "logout" %}">Logout
                               </a>                           
@@ -51,19 +45,15 @@
                               </ul>
                 
                               <ul class="navbar-nav ml-auto">
-                                <li class="nav-item ">
-                                  <a class="nav-link" href="{% url "home" %}">Home <span class="sr-only">(current)</span></a>
-                                </li>
                                 <li class="nav-item active">
                                   <a class="nav-link" href="{% url "home" %}">Past Projects
-                                    <span class="sr-only">(current)</span>
                                 </a>
                                 </li>                                  
                                 <li class="nav-item">
                                     <a href="{% url "login" %}" class="nav-link" id="login">Log in</a>
                                 </li>
                                 <li class="nav-item" id="signup">
-                                  <a class="nav-link" href="{% url "select-signup" %}">Register
+                                  <a class="nav-link" href="{% url "select_signup" %}">Register
                                   </a>                           
                                 </li>                          
                               </ul>

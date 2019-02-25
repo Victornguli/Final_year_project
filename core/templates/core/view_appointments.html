@@ -5,6 +5,9 @@
 {% if user.is_authenticated %}
 {% if user.is_supervisor %}
 
+<div class="wrapper">
+
+
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
     Open modal
 </button>
@@ -124,7 +127,7 @@
     </table>
 
     </div>    
-
+</div>
 {% else %}
 
 <p>Error 404 not found</p>

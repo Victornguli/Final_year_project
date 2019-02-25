@@ -1,32 +1,30 @@
 {% extends "core/logged_base.html" %}
 
 {% block content %}
-<div class="main">
     {% if user.is_authenticated %}
     {% if user.is_supervisor %}
-    <h5 class="mb-2">Logged in as Supervisor</h5>
-    <div class="row logged_menu pt-2 pb-2">
-        <div class="col-3"></div>
-        <div class="col-2"></div>
-        <div class="col-2"> <a style="color: white" href="{% url  "select_days" %}">Set Appointment Time</a></div>
-        <div class="col-2"><a style="color: white" href="{% url  "appointments" %}">Appointments</a></div>
-    </div>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-    view pending appointments
-</button>
-
-
+<div class="breadcrumbs">
+    <a href="{% url "home" %}">SPMS</a>
+    &rsaquo;
+    Supervisor
+    &rsaquo;
+    <a href="{% url  "appointments" %}">Appointments</a>
+    &boxv;
+    <a href="{% url  "select_days" %}">Select Available Days</a>
+    &boxv;
+    <a href="" class="" data-toggle="modal" data-target="#myModal">View pending Appointments</a>
+    <span class="float-right">Logged in as Supervisor</span>       
+</div>    
+<div class="wrapper"> 
   <div class="modal" id="myModal">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
       
- 
         <div class="modal-header">
           <h4 class="modal-title">Pending Appointments</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-        
-      
+              
         <div class="modal-body">
             <table class="table">
                 <th>Sent By</th>
@@ -37,7 +35,7 @@
                 {% for appointment in appointments %}
                 {% for student in students %}
                 {% if student.id == appointment.student_id %}
-                {% if appointment.approved != "APRD" %}
+                {% if appointment.approved != "Approved" %}
                 {% if appointment.approved != "Rejected" %}
                 <tr>
                     <td>{{ student.first_name }}</td>
@@ -118,12 +116,14 @@
             {% for appointment in appointments %}
             {% for student in students %}
             {% if student.id == appointment.student_id %}
+            {% if appointment.approved != "Applied" %}
             <tr>
                 <td>{{ student.first_name }}</td>
                 <td>{{ appointment.date }}</td>
                 <td>{{ appointment.time }}</td>
                 <td>{{ appointment.approved }}</td>
             </tr>
+            {% endif %}
             {% endif %}
             {% endfor %}
             {% endfor %}
@@ -133,18 +133,23 @@
 
 </div>
     {% else %}
-<div class="main">
     <!-- Logged in as a Student -->
+<div class="breadcrumbs">
+    <a href="{% url "home" %}">SPMS</a>
+    &rsaquo;
+    Student
+    &rsaquo;
+    Appointments
+    &rsaquo;
+    <a href="{% url  "appointments" %}">Pending Appointments</a>
+    &frasl;
+    <a href="{% url  "request_appointment" %}">Request Appoinmtent</a>
+    <span class="float-right">Welcome {{ user.student.first_name }}</span>    
+</div>    
+<div class="wrapper">    
     <h5 class="mb-2">Logged in as student</h5>
-    <div class="row logged_menu pt-2 pb-2">
-        <div class="col-3"></div>
-        <div class="col-3"></div>
-        <div class="col-2"></div>
-        <div class="col-2"> <a style="color: white" href="{% url  "request_appointment" %}">Request Appoinment</a></div>
-        <div class="col-2"><a style="color: white" href="{% url  "appointments" %}">Pending Appointments</a></div>
-    </div>
     <table class="table w-100">
-        <h5 class="mt-5 mb-3">Requested Appointments</h5>
+        <caption class="mb-3">Requested Appointments</caption>
         <th>Date</th>
         <th>Time</th>
         <th>Status</th>

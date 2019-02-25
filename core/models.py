@@ -113,4 +113,11 @@ class Milestone(models.Model):
     def __str__(self):
         return self.milestone_name, self.start_date    
 
+class Document(models.Model):
+    title = models.CharField(max_length=50)
+    document = models.FileField(upload_to="")
+    upladed_at = models.DateTimeField(auto_now_add=True)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    milestone = models.ForeignKey(Milestone, on_delete=models.CASCADE)
+
 

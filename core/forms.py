@@ -10,7 +10,16 @@ class StudentSignUpForm(UserCreationForm):
         ("CS" , "BSC (Computer Science)"),
         ("ACMP" , "BSC (Applied Computer Science)"),
     )
-    first_name = forms.CharField(max_length=30, required=True, help_text="Optional")
+    first_name = forms.CharField(
+        max_length=30,
+        required=True, help_text="Optional",
+        widget=forms.TextInput(
+            attrs={
+                'class': 'bg-red',
+                'placeholder': 'Write your name here'
+                }
+            )
+        )
     last_name = forms.CharField(max_length=30, required=True, help_text="Optional")
     registration_number = forms.CharField(max_length=30, required=True,help_text="Required")
     course = forms.ChoiceField(help_text="Required", choices=courses)
@@ -79,3 +88,13 @@ class SetMilestoneForm(forms.Form):
     milestone = forms.CharField()
     start_date = forms.DateField(required="False")
     end_date = forms.DateField(required="False")
+
+# class DocumentForm(forms.ModelForm):
+#     document = forms.FileField()
+#     class Meta:
+#         model = Document
+#         fields = ('document', )
+
+class UploadFileForm(forms.Form):
+    title = forms.CharField(max_length=50, required=True)
+    document = forms.FileField()

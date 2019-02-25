@@ -7,6 +7,9 @@ body{
 .navbar {
     width: 100%;
     margin: auto;
+    background-color: #417690;
+    z-index: 1;
+    top: 0;
 }
 
 .navbar .navbar-brand{
@@ -14,7 +17,7 @@ body{
 }
 
 .navbar  .nav-item .nav-link{
-    color: black;
+    color: #fffefe;
     border-radius: 3px;
     margin: 0px 5px 0px 5px;
     padding-left: 10px;
@@ -26,21 +29,41 @@ body{
     background-color: rgb(48, 48, 48);
 }
 
+/* BREADCRUMBS  */
+
+.breadcrumbs {
+    width: 100%;
+    background: #79aec8;
+    padding: 10px 20px;
+    border: none;
+    font-size: 15px;
+    color: #d6d8da;
+    text-align: left;
+}
+
+.breadcrumbs .current{
+    border-bottom: 1px solid whitesmoke;
+}
+
+.breadcrumbs .current:hover{
+    border-bottom: 1px solid whitesmoke;
+    text-decoration: none;
+}
+
+.breadcrumbs a {
+    color: #fff;
+}
+
+.breadcrumbs a:focus, .breadcrumbs a:hover {
+    color: #c4dce8;
+}
+
 .wrapper{
     width: 100%;
     margin: auto;
     background-color: whitesmoke;
-    padding:50px 20px 20px 20px;
+    padding:20px 20px 20px 20px;
     border-radius: 5px;
-}
-
-/* .main{
-    width: 100%;
-    margin: auto;
-} */
-
-#intro{
-    margin-top: 10px;
 }
 
 .flex-container{
@@ -67,7 +90,15 @@ body{
 
 .title {
     margin: 15px 15px 15px 15px;
+    text-decoration: none;
+    color: #417690;
 }
+
+.title:hover{
+    text-decoration: none;
+    color: #417690;
+}
+
 .info{
     margin: 10px;
 }
@@ -140,13 +171,18 @@ body{
     width: 100%;
 }
 
+.table th{
+    background-color: #9b9999;
+    padding: 8px;
+}
+
 .table td, th{
     border: 1px solid #dddddd;
     text-align: left;
     padding:3px 3px 3px 10px;
 }
 
-.table tr:nth-child(even){
+.table tr:nth-child(odd){
     background-color: #ececec;
 }
 
@@ -154,4 +190,11 @@ body{
     background-color: #79aec8;
     color: white;
     opacity: 1.5;
+}
+
+/* MILESTONES */
+
+.milestone{
+    width: 100%;
+    margin: auto;
 }

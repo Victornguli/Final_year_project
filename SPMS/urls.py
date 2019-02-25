@@ -10,7 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", Index, name="home"),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("accounts/signup/", SignUp, name="select-signup"),
+    path("accounts/signup/", SignUp, name="select_signup"),
     path("accounts/signup/student/", StudentSignUp.as_view(), name = "student_signup" ),
     path("accounts/signup/supervisor/", SupervisorSignUp.as_view(), name = "supervisor_signup"),
     path("appointments/request_appointment", RequestAppointment , name="request_appointment"),
@@ -23,6 +23,10 @@ urlpatterns = [
     path("student/update_profile", UpdateProfile , name="update_profile"),
     path("student/project", StudentProject , name="student_project"),
     path("supervisor/update_profile", UpdateProfile , name="update_profile"),
+    path("student/project/upload_document(<milestone_id>[0-9]+)", upload_file, name="upload_document"),
+    path("project/download(<document_id>[0-9]+)", download_document , name="download"),
+    path("supervisor/project", project_view , name="project"),
+    path("supervisor/project_supervision(<student_id>[0-9]+)", project_supervision_view , name="project_supervision"),
 
     # path("past-projects/", PastProjets, name="projects"),
     # path("accounts/login",include("django.auth.urls")),
@@ -31,4 +35,5 @@ urlpatterns = [
 
 urlpatterns += staticfiles_urlpatterns()
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
