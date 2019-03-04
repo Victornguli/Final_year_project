@@ -13,7 +13,6 @@
     Supervisor
     &rsaquo;
     <a href="{% url "project" %}">Project</a>
-    &boxv;
     <span class="float-right">Logged in as Supervisor</span>    
 </div>
 
@@ -22,21 +21,21 @@
         <h6 class="mt-5 mb-3">Supervision List</h6>
         <th>First Name</th>
         <th>Last Name</th>
-        <th>Project Title</th>
         <th>Registration Number</th>
         <th>Course</th>
+        <th>Project Title</th>
         {% for student in students %}
         {% if student.status %}
         <tr>
             <td>{{ student.first_name }}</td>
             <td>{{ student.last_name }}</td>
-            <td><a href="{% url "project_supervision" student.id %}">{{ student.project.title }}</a></td>
             <td>{{ student.reg_number }}</td>
             {% if student.course == "CS" %}
             <td>BSC(Computer Science)</td>
             {% else %}
             <td>BSC(Applied Computer Science)</td>
             {% endif %}
+            <td><a href="{% url "project_supervision" student.id %}">{{ student.project.title }}</a></td>
         </tr>
         {% endif %}
         {% endfor %}

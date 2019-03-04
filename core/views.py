@@ -5,7 +5,7 @@ from django.views.generic import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.http import FileResponse
 from django.utils.text import slugify
-
+from django.contrib import messages
 
 from .models import *
 from .forms import *
@@ -28,9 +28,9 @@ class StudentSignUp(CreateView):
         return redirect('home')
 
 
-def Index(request):
-    form = UserCreationForm()
-    return render(request, "core/index.html", {"form":form})
+# def Index(request):
+#     form = UserCreationForm()
+#     return render(request, "core/index.html", {"form":form})
 
 
 class SupervisorSignUp(CreateView):
@@ -74,7 +74,7 @@ def RequestAppointment(request):
         # return render(request, "core/request-appointment.html")
 
 def SelectAvailableDays(request):
-    form =  SelectAvailableDaysForm(request.POST)
+    form = SelectAvailableDaysForm(request.POST)
     user = request.user
     exists = AvailableDay.objects.filter(supervisor_id = user.supervisor).count()
     print (exists)
@@ -141,8 +141,16 @@ def SetMilestones(request):
     
     return render(request, "core/coordinator.html", {"form2":form})
 
-def UpdateProfile(request):
-    return render(request, "core/profile.html")
+def ViewProfile(request):
+    user = request.user
+    if user.is_student:
+        student = user.student
+        form = UpdateProfileForm(initial={'first_name': student.first_name, 'last_name': student.last_name, 'user_name': user.username,'email': student.email})
+    else:
+        supervisor = user.supervisor
+        form = UpdateProfileForm(initial={'first_name': supervisor.first_name, 'last_name': supervisor.last_name, 'user_name': user.username,'email': supervisor.email})
+
+    return render(request, "core/profile.html", {"form":form})
 
 def project_view(request):
     user = request.user
@@ -155,30 +163,44 @@ def project_view(request):
 
 def StudentProject(request):
     user = request.user
-    
+    form2 = SendCommentForm(request.POST, request.FILES)
+
     if user.is_student:
-        schedule = user.student.project.schedule
-        milestones = Milestone.objects.filter(schedule_id=schedule.id)
-        documents = Document.objects.all()
-        remaining_days = {}
-        for milestone in milestones:
-            start_date = milestone.start_date
-            end_date = milestone.end_date
-            days = end_date - start_date
-            remaining_days[milestone.id] = days.days
-        
-        print (remaining_days)
+        student = user.student
+        if student.project:
+            schedule = user.student.project.schedule
+            milestones = Milestone.objects.filter(schedule_id=schedule.id)
+            documents = Document.objects.all()
+            comments = Comment.objects.filter(student_id = student.id)
 
-        return render(request,"core/project/project_progress.html", {"milestones":milestones, "student":user.student,"remaining_days":remaining_days, "documents":documents})
+            comment_count = {}
+            for milestone in milestones:
+                comment_count[milestone.id] = Comment.objects.filter(student_id = student.id, milestone_id=milestone.id).count()
+            print (milestone.id, comment_count)
+            
+            remaining_days = {}
+            for milestone in milestones:
+                start_date = milestone.start_date
+                end_date = milestone.end_date
+                days = end_date - start_date
+                remaining_days[milestone.id] = days.days
+            
+            print (remaining_days)
+        else:
+            form = CreateProjectForm(request.POST)
+            return render(request, "core/project/project_progress.html",{"form":form})
 
+        return render(request,"core/project/project_progress.html", {"milestones":milestones, "student":student,"remaining_days":remaining_days, "documents":documents, "form2":form2, "comments":comments, "comment_count":comment_count })
 
 def project_supervision_view(request, student_id):
     user = request.user
+    form = SendCommentForm(request.POST, request.FILES)
     if user.is_supervisor:
         student = Student.objects.get(pk=student_id)
         schedule = student.project.schedule
         milestones = Milestone.objects.filter(schedule_id=schedule.id)
         documents = Document.objects.filter(student_id = student_id)
+        comments = Comment.objects.all()
         remaining_days = {}
         for milestone in milestones:
             start_date = milestone.start_date
@@ -187,8 +209,7 @@ def project_supervision_view(request, student_id):
             remaining_days[milestone.id] = days.days
         
         print (remaining_days)
-        #print (milestones)
-        return render(request, "core/project/project_supervision.html",  {"milestones":milestones, "student":student,"remaining_days":remaining_days, "documents":documents})
+        return render(request, "core/project/project_supervision.html",  {"milestones":milestones, "student":student,"remaining_days":remaining_days, "documents":documents, "comments":comments, "form":form})
 
 def upload_file(request, milestone_id):
     if request.method == 'POST':
@@ -218,15 +239,55 @@ def download_document(request, document_id):
     return response
 
 
-# def download_document(request, document_id):
-#     path = os.path.abspath('/media/v3ctor/Projects/FinalYear/newProject/SPMS/media/')
-#     documents = Document.objects.get(pk = document_id)
-#     filename = str(documents.document)
-#     print (documents.document)
-#     f = open(path+filename, "w")
-#     response = HttpResponse(FileWrapper(f), content_type='application/pdf')
-#     response['Content-Disposition'] = 'attachment; filename=resume.pdf'
-#     f.close()
-#     return response
+def createproject_view(request):
+    if request.method == "POST":
+        form = CreateProjectForm(request.POST, request.FILES)
+        user = request.user
+        if form.is_valid():
+            if user.is_student:
+                student = user.student
+            else:
+                pass
+            title = form.cleaned_data.get("title")
+            schedule = Schedule.objects.get(status=1)
+            project = Project.objects.create(title=title, schedule_id = schedule.id)
+            Student.objects.filter(id = student.id).update(project_id=project.id)
+            print (project.id)
+        return redirect(StudentProject)
 
+def view_comment(request, milestone_id, student_id):
+    if request.method == "POST":
+        form = SendCommentForm(request.POST, request.FILES)
+        student = Student.objects.get(pk=student_id)
+        if form.is_valid():
+            text = form.cleaned_data.get("comment")
+            Comment.objects.create(text=text, student_id = student.id, supervisor_id=student.supervisor.id, milestone_id=milestone_id, sender = 1)
+
+    return redirect(StudentProject)
+
+def UpdateProfile(request):
+    user =  request.user
+    form = UpdateProfileForm(request.POST, request.FILES)
+    if form.is_valid():
+        email = form.cleaned_data.get("email")
+        first_name = form.cleaned_data.get("first_name")
+        last_name = form.cleaned_data.get("last_name")
+        user_name = form.cleaned_data.get("user_name")   
+
+    if user.is_authenticated:
+        if user.is_student:
+            student = user.student
+            Student.objects.filter(pk=student.id).update(email=email, first_name=first_name, last_name=last_name)
+
+        else:
+            supervisor = user.supervisor
+            Supervisor.objects.filter(pk=supervisor.id).update(email=email, first_name=first_name, last_name=last_name)
+        
+        return redirect(ViewProfile)
+
+
+def ViewPastProjects(request):
+    projects = Project.objects.all()
+    students = Student.objects.all()
+    return render(request,"core/index.html", {"projects":projects,"students":students})
 

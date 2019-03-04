@@ -1,51 +1,43 @@
 {% extends "registration/base.html" %}
+{% load crispy_forms_tags %}        
 {% block content %}
-<div id="signup">
-  <div class="w-75 m-auto text-left">
+
+{% if "/accounts/signup/student/" == request.path %}
+<div class="breadcrumbs">
+  <a href="{% url "home" %}">SPMS</a>
+  &rsaquo;
+  <a href="{% url  "select_signup" %}">Registration</a>
+  &rsaquo;  
+  Student Registration
+</div>
+{% else %}
+<div class="breadcrumbs">
+  <a href="{% url "home" %}">SPMS</a>
+  &rsaquo;
+  <a href="{% url  "select_signup" %}">Registration</a>
+  &rsaquo;
+  Supervisor Registration
+</div>
+{% endif %}
+
+<div class="wrapper">
+  <div class="w-50 m-auto text-left">
     {% if "/accounts/signup/student/" == request.path %}
-    <h4 class="mb-5"> <b>Student Registration</b></h4>
+    <h4 class="mb-3"> <b>Student Registration</b></h4>
     <form action="{% url "student_signup" %}" method="POST">
       {% csrf_token %}
-      {% for field in form %}
-      <div class="w-75 text-left m-auto">
-        <div class="mb-3">
-          <span class="label">{{ field.label_tag }}</span>
-          <div class="field float-right">{{ field }}</div>
-        </div>
-        {% for error in field.errors %}
-        <div>
-          <div class="alert alert-danger" style="width:100%; text-align:left">{{ error }}</div>
-        </div>
-        {% endfor %}
-  
-      </div>
-      {% endfor %}
-      <!-- <input type="submit" value="Sign Up"> -->
-      <div class="w-75 m-auto text-left">
-        <button class="btn btn-success pl-4 pr-4" type="submit">Sign Up</button>
+      {{ form | crispy }}
+      <div class="w-100 m-auto text-right">
+        <button class="btn btn-outline-success pl-4 pr-4 mb-5" type="submit">Sign Up</button>
       </div>
     </form>    
     {% else %}
-    <h4 class="mb-5"> <b>Supervisor Registration</b></h4>
+    <h4 class="mb-3"> <b>Supervisor Registration</b></h4>
     <form action="{% url "supervisor_signup" %}" method="POST">
       {% csrf_token %}
-      {% for field in form %}
-      <div class="w-75 text-left m-auto">
-        <div class="mb-3">
-          <span class="label">{{ field.label_tag }}</span>
-          <div class="field float-right">{{ field }}</div>
-        </div>
-        {% for error in field.errors %}
-        <div>
-          <div class="alert alert-danger" style="width:100%; text-align:left">{{ error }}</div>
-        </div>
-        {% endfor %}
-  
-      </div>
-      {% endfor %}
-      <!-- <input type="submit" value="Sign Up"> -->
-      <div class="w-75 m-auto text-left">
-        <button class="btn btn-success pl-4 pr-4" type="submit">Sign Up</button>
+      {{ form | crispy }}
+      <div class="w-100 m-auto text-right">
+        <button class="btn btn-outline-success pl-4 pr-4 mb-5" type="submit">Sign Up</button>
       </div>
     </form>    
     {% endif %}

@@ -1,14 +1,12 @@
 import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-# import weekday_field
-
-# Create your models here.
 
 class Schedule(models.Model):
     schedule_name = models.CharField(max_length = 100, default="")
     start_date = models.DateField(auto_now_add=False, auto_now=False)
     end_date = models.DateField(auto_now_add=False, auto_now=False)
+    status = models.BooleanField(default=1)
 
     def __str__(self):
         return self.schedule_name
@@ -108,10 +106,11 @@ class Milestone(models.Model):
     end_date = models.DateField(auto_now_add=False, auto_now=False)
     status = models.CharField(max_length=2, choices=milestone_status, default="NS")
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+    required_document = models.CharField(max_length=100, null=True)
     group = models.CharField(choices=milestone_group, default = "S1", max_length=2)
 
     def __str__(self):
-        return self.milestone_name, self.start_date    
+        return self.milestone_name  
 
 class Document(models.Model):
     title = models.CharField(max_length=50)
@@ -120,4 +119,12 @@ class Document(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     milestone = models.ForeignKey(Milestone, on_delete=models.CASCADE)
 
+
+class Comment(models.Model):
+    text = models.CharField(max_length=200)
+    student = models.ForeignKey(Student, null=False, on_delete=models.CASCADE)
+    supervisor = models.ForeignKey(Supervisor, null=False, on_delete=models.CASCADE)
+    sender = models.BooleanField(default=0)
+    sent_date = models.DateField(auto_now_add=False, auto_now=True)
+    milestone = models.ForeignKey(Milestone, null=False, on_delete=models.CASCADE)
 

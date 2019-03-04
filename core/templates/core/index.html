@@ -45,100 +45,28 @@
                 <a class="title year" href=""><div>Year <span class="fa fa-sort"></span></div></a>
                 <a class="title lastname" href=""><div>Last Name <span class="fa fa-sort"></span></div></a>
                 <a class="title firstname" href=""><div>First Name <span class="fa fa-sort"></span></div></a>
-                <a class="title project-name" href=""><div>Project Title <span class="fa fa-sort"></span></div></a>
                 <a class="title supervisor" href=""><div>Supervisor <span class="fa fa-sort"></span></div></a>
+                <a class="title project-name" href=""><div>Project Title <span class="fa fa-sort"></span></div></a>
                 <div class="title more-info">More Info </div>
             </div>
-            <div class="project-info">
-                <div class="info year">2017/2018</div>
-                <div class="info lastname">Joseph</div>
-                <div class="info firstname">Victor</div>
-                <div class="info project-name">This is an example Student Project title like a Student Project
-                    Management System Lorem ipsum dolor sit amet.</div>
-                <div class="info supervisor">Bernard, <br> Osero</div>
+            {% for project in projects %}  
+            <div class="project-info">              
+                <div class="info year">{{ project.schedule.schedule_name }}</div>
+                {% for student in students %}
+                {% if student.project_id == project.id %}
+                <div class="info lastname">
+                    {{ student.last_name }}                   
+                </div>
+                <div class="info firstname">{{ student.first_name }}</div>
+                <div class="info supervisor">
+                    {{ student.supervisor.first_name }}, {{ student.supervisor.last_name }}
+                </div>
+                {% endif %}
+                {% endfor %} 
+                <div class="info project-name">{{ project.title }}</div>
                 <div class="info more-info"> <a href=""> More Info</a></div>
             </div>
-            <div class="project-info">
-                <div class="info year">2017/2018</div>
-                <div class="info lastname">Joseph</div>
-                <div class="info firstname">Victor</div>
-                <div class="info project-name">This is an example Student Project title like a Student Project
-                    Management System Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi, nostrum.</div>
-                <div class="info supervisor">Bernard, <br> Osero</div>
-                <div class="info more-info"> <a href=""> More Info</a></div>
-            </div>
-            <div class="project-info">
-                <div class="info year">2017/2018</div>
-                <div class="info lastname">Joseph</div>
-                <div class="info firstname">Victor</div>
-                <div class="info project-name">This is an example Student Project title like a Student Project
-                    Management System</div>
-                <div class="info supervisor">Bernard Osero</div>
-                <div class="info more-info"> <a href=""> More Info</a></div>
-            </div>
-            <div class="project-info">
-                <div class="info year">2017/2018</div>
-                <div class="info lastname">Joseph</div>
-                <div class="info firstname">Victor</div>
-                <div class="info project-name">This is an example Student Project title like a Student Project
-                    Management System</div>
-                <div class="info supervisor">Bernard Osero</div>
-                <div class="info more-info"> <a href=""> More Info</a></div>
-            </div>
-            <div class="project-info">
-                <div class="info year">2017/2018</div>
-                <div class="info lastname">Joseph</div>
-                <div class="info firstname">Victor</div>
-                <div class="info project-name">This is an example Student Project title like a Student Project
-                    Management System</div>
-                <div class="info supervisor">Bernard Osero</div>
-                <div class="info more-info"> <a href=""> More Info</a></div>
-            </div>
-            <div class="project-info">
-                <div class="info year">2017/2018</div>
-                <div class="info lastname">Joseph</div>
-                <div class="info firstname">Victor</div>
-                <div class="info project-name">This is an example Student Project title like a Student Project
-                    Management System</div>
-                <div class="info supervisor">Bernard Osero</div>
-                <div class="info more-info"> <a href=""> More Info</a></div>
-            </div>
-            <div class="project-info">
-                <div class="info year">2017/2018</div>
-                <div class="info lastname">Joseph</div>
-                <div class="info firstname">Victor</div>
-                <div class="info project-name">This is an example Student Project title like a Student Project
-                    Management System</div>
-                <div class="info supervisor">Bernard Osero</div>
-                <div class="info more-info"> <a href=""> More Info</a></div>
-            </div>
-            <div class="project-info">
-                <div class="info year">2017/2018</div>
-                <div class="info lastname">Joseph</div>
-                <div class="info firstname">Victor</div>
-                <div class="info project-name">This is an example Student Project title like a Student Project
-                    Management System</div>
-                <div class="info supervisor">Bernard Osero</div>
-                <div class="info more-info"> <a href=""> More Info</a></div>
-            </div>
-            <div class="project-info">
-                <div class="info year">2017/2018</div>
-                <div class="info lastname">Joseph</div>
-                <div class="info firstname">Victor</div>
-                <div class="info project-name">This is an example Student Project title like a Student Project
-                    Management System</div>
-                <div class="info supervisor">Bernard Osero</div>
-                <div class="info more-info"> <a href=""> More Info</a></div>
-            </div>
-            <div class="project-info">
-                <div class="info year">2017/2018</div>
-                <div class="info lastname">Joseph</div>
-                <div class="info firstname">Victor</div>
-                <div class="info project-name">This is an example Student Project title like a Student Project
-                    Management System</div>
-                <div class="info supervisor">Bernard Osero</div>
-                <div class="info more-info"> <a href=""> More Info</a></div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </div>

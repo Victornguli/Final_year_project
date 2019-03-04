@@ -12,10 +12,10 @@ class StudentSignUpForm(UserCreationForm):
     )
     first_name = forms.CharField(
         max_length=30,
-        required=True, help_text="Optional",
+        required=True,
+        help_text="Optional",
         widget=forms.TextInput(
             attrs={
-                'class': 'bg-red',
                 'placeholder': 'Write your name here'
                 }
             )
@@ -54,19 +54,6 @@ class SupervisorSignUpForm(UserCreationForm):
         supervisor = Supervisor.objects.create(user=user, first_name=user.first_name, last_name=user.last_name, email=user.email)
         return user
 
-# class CreateAppointmentForm(forms.ModelForm):
-#     time = forms.DateTimeField()
-    
-#     class Meta:
-#         model = Appointment
-#         fields = ("time",)
-    
-#     @transaction.atomic
-#     def save(self):
-#         #user = request.user
-#         appointment = Appointment.objects.create(time=self.cleaned_data.get("time"))
-#         return appointment
-
 class CreateAppointmentForm(forms.Form):
     date = forms.DateField()
     time = forms.DateTimeField(widget = forms.DateTimeInput)
@@ -89,12 +76,27 @@ class SetMilestoneForm(forms.Form):
     start_date = forms.DateField(required="False")
     end_date = forms.DateField(required="False")
 
-# class DocumentForm(forms.ModelForm):
-#     document = forms.FileField()
-#     class Meta:
-#         model = Document
-#         fields = ('document', )
-
 class UploadFileForm(forms.Form):
     title = forms.CharField(max_length=50, required=True)
     document = forms.FileField()
+
+class CreateProjectForm(forms.Form):
+    title = forms.CharField(max_length=50, required=True)
+
+class SendCommentForm(forms.Form):
+    comment = forms.CharField(
+        max_length=200,
+        widget=forms.Textarea()
+    )
+
+class UpdateProfileForm(forms.Form):
+    user = User
+    first_name = forms.CharField(
+        initial = "supervisor",
+        max_length=50,
+        widget = forms.TextInput(
+        )
+        )
+    last_name = forms.CharField(max_length=50)
+    user_name = forms.CharField(max_length=50)
+    email = forms.EmailField(max_length=50)

@@ -12,56 +12,66 @@
             <span class="float-right">Welcome {{ user.student.first_name }}</span>    
     </div>
     <div class="wrapper">
-    <h6>Logged in as a Student</h6>
+    {% if user.student.project %}
+    <span class="float-right mr-1"> <a href="" >Milestones Color Guide</a><span class="fa fa-question-circle"></span></span>  
+    <h6>Project Title : {{ user.student.project.title }}</h6>
+    <h6>Name of Supervisor : {{user.student.supervisor.first_name }} {{ user.student.supervisor.last_name }} </h6>
+    <h6>Name of Student : {{ user.student.first_name }} {{ user.student.last_name }}</h6>
+    <h6>Project Description : {{ user.student.project.title }}</h6>
+
     <div class="row milestone mt-3 mb-3 bg-dark text-light">
-        <div class="col-md-2 text-left pl-1">Semester1</div>
-        <div class="col-md-1 text-left pl-1">Status</div>
-        <div class="col-md-1 text-left pl-1">Start Date</div>
-        <div class="col-md-1 text-left pl-1">End Date</div>
-        <div class="col-md-2 text-left pl-1">Remaining Days</div>
-        <div class="col-md-2 text-left pl-1">Document Title</div>
-        <div class="col-md-2 text-left pl-1">Download/Upload Documentation</div>
-        <div class="col-md-1 text-left pl-1">Comments</div>
+        <div class="col text-left">Semester1</div>
+        <div class="col text-left">Status</div>
+        <div class="col text-left ">Start Date</div>
+        <div class="col text-left ">End Date</div>
+        <div class="col text-left ">Remaining Days</div>
+        <div class="col text-left ">Required Document Title</div>
+        <div class="col text-left ">Download/Upload Documentation</div>
+        <div class="col text-left ">Comments</div>
     </div>
     {% for milestone in milestones %}
     <script>
         window.onload = function activateModals(){
-            var id = "milestone_"+"{{ milestone.id }}";
-            modals = document.getElementById("modal-id");
-            // for (var i=0; i<modals.length; i++){
-            modals.setAttribute("id",id);
+            var id = "milestone"+"{{ milestone.id }}";
+            var id2 = "milestone_"+"{{ milestone.id }}";
+            document.getElementById("modal-id").setAttribute("id",id);
             document.getElementById("modal-link").setAttribute("data-target", "#"+id);
+
+            document.getElementById("comment-id").setAttribute("id",id2);
+            document.getElementById("comment-modal").setAttribute("data-target", "#"+id2);
+
             console.log(id);
+            console.log(id2);
             // }
             console.log("success");
         }
     </script>
     <div class="row milestone mt-1">
-        <div class="col-md-2 text-left pl-1"><a href=""></a>{{ milestone.milestone_name }} 
+        <div class="col text-left "><a href=""></a>{{ milestone.milestone_name }} 
             <input type="hidden" id="myVar" name="variable" value="{{ milestone.id }}">
         </div>
-        <div class="col-md-1 text-left pl-1">
+        <div class="col text-left">
             {% if milestone.status == "NS" %}Not Started
             {% elif milestone.status == "ON" %}Ongoing 
             {% else %} Finished 
             {% endif %}
         </div>
-        <div class="col-md-1 text-left pl-1">
+        <div class="col text-left">
             {{ milestone.start_date }}
         </div>
-        <div class="col-md-1 text-left pl-1">{{ milestone.end_date}}</div>
-        <div class="col-md-2 text-left pl-1">
+        <div class="col text-left">{{ milestone.end_date}}</div>
+        <div class="col text-left ">
             {% for key,values in remaining_days.items %}
             {% if key == milestone.id %}
             {{ values }}
             {% endif %}
             {% endfor %}
         </div>
-        <div class="col-md-2 text-left pl-1">Submit Documentation</div>
-        <div class="col-md-2 text-left pl-1">
+        <div class="col text-left">{{ milestone.required_document }}</div>
+        <div class="col text-left">
         <a href="" class="" data-toggle="modal" data-target="#{{ milestone.id }}">Upload</a>/
         <a href="" data-toggle="modal" id="modal-link" data-target="#modal-id">Download</a>
-        <div class="modal download-modal" id="modal-id">
+        <div class="modal" id="modal-id">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -123,10 +133,66 @@
                         </div>
                     </div>
                 </div>            
+        </div>     
+        <div class="col text-left">
+                <div class="modal" id="comment-id">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">View Comments on {{ milestone.milestone_name }}</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table" id="comments">
+                                        {% for comment in comments %}
+                                        <tr>
+                                        {% if comment.milestone_id == milestone.id %}
+                                            {% if comment.sender == 0 %}
+                                            <td>
+                                                By {{ comment.supervisor.first_name}} - {{ comment.sent_date }} </br>
+                                                {{ comment.text }}
+                                            </td>
+                                            {% else %}
+                                            <td>
+                                                By {{ comment.student.first_name}} - {{ comment.sent_date }} </br>
+                                                {{ comment.text }}
+                                            </td>
+                                            {% endif %}
+                                        {% endif %}
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                        <form method="POST" action="{% url "view_comments" milestone.id student.id %}">
+                                            {% csrf_token %}
+                                            {{ form2 }}
+                                            <button class="btn btn-success" type="submit">Send</button>
+                                        </form>
+                                </div>
+                
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>               
+            <a href=""  id="comment-modal" data-toggle="modal" data-target="#comment-id">
+                Comments
+                {% for key,values in comment_count.items %}
+                {% if key == milestone.id %}
+                {{ values }}
+                {% endif %}
+                {% endfor %}                
+            </a>        
         </div>
-        <div class="col-md-1 text-left pl-1"><a href="">Comments</a></div>
     </div>
     {% endfor %}
+    {% else %}
+    <form method="POST" action="{% url "create_project" %}">
+        {% csrf_token %}
+        {{ form }}
+        <button class="btn btn-primary" type="submit">Create</button>
+    </form>
+    {% endif %}
     {% else %}
     <div class="breadcrumbs">
         <a href="{% url "home" %}">SPMS</a>
