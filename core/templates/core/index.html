@@ -40,20 +40,29 @@
     </div>
 
     <div id="past-projects">
+        <div class="filter">
+            show <select name="entries" id="">
+                <option value="100">100</option>
+                <option value="50">50</option>
+                <option value="50">25</option>
+            </select>
+            projects
+
+        </div>
         <div class="flex-container">
             <div id="head-titles">
-                <a class="title year" href=""><div>Year <span class="fa fa-sort"></span></div></a>
-                <a class="title lastname" href=""><div>Last Name <span class="fa fa-sort"></span></div></a>
-                <a class="title firstname" href=""><div>First Name <span class="fa fa-sort"></span></div></a>
-                <a class="title supervisor" href=""><div>Supervisor <span class="fa fa-sort"></span></div></a>
-                <a class="title project-name" href=""><div>Project Title <span class="fa fa-sort"></span></div></a>
-                <div class="title more-info">More Info </div>
+                <div class="title year">Year</div>
+                <div class="title lastname">Last Name</div>
+                <div class="title firstname">First Name</div>
+                <div class="title supervisor">Supervisor</div>
+                <div class="title project-name">Project Title</div>
+                <div class="title more-info">More Info</div>
             </div>
-            {% for project in projects %}  
+            {% for pastproject in pastprojects %}  
             <div class="project-info">              
-                <div class="info year">{{ project.schedule.schedule_name }}</div>
+                <div class="info year">{{ pastproject.project.schedule.schedule_name }}</div>
                 {% for student in students %}
-                {% if student.project_id == project.id %}
+                {% if student.project_id == pastproject.project.id %}
                 <div class="info lastname">
                     {{ student.last_name }}                   
                 </div>
@@ -63,8 +72,44 @@
                 </div>
                 {% endif %}
                 {% endfor %} 
-                <div class="info project-name">{{ project.title }}</div>
-                <div class="info more-info"> <a href=""> More Info</a></div>
+                <div class="info project-name">{{ pastproject.project.title }}</div>
+                <div class="info more-info"> 
+                    <a href="" data-toggle="modal" data-target="#{{ pastproject.id }}"> More Info {{ project.id }}</a>
+                </div>
+                <div class="modal" id="{{ pastproject.id }}">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="">Project Title : {{ pastproject.project.title }}</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                            {% for student in students %}
+                            {% if student.project_id == pastproject.project.id %}
+                            <div>
+                                <p>Name of student : {{ student.first_name }} {{ student.last_name }}</p>
+                                <p>Name of supervisor : {{ student.supervisor.first_name }} {{ student.supervisor.last_name }}</p> 
+                                <p>Year Done : {{ pastproject.project.schedule }}</p>
+                            </div>
+                            <h5>
+                                Abstract
+                            </h5>
+                            {{ pastproject.project.abstract.abstract_text }}
+                            <div>
+                                <a href="">
+                                    <button class="btn btn-outline-success mt-3 float-right">Download Abstract</button>
+                                </a>
+                                <div class="clearfix"></div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
             </div>
             {% endfor %}
         </div>
@@ -73,3 +118,4 @@
 
 {% endblock %}
 
+Lorem ipsum dolor, sit amet consectetur adipisicing elit. Omnis temporibus, earum labore ipsum voluptatibus sint pariatur consectetur explicabo officiis quia maiores id sunt dicta aut dolore maxime error. Accusantium, molestiae nulla eos saepe minima aspernatur. Optio illo nesciunt quos, eaque officiis magni quaerat modi. Doloribus, amet? A error repellat vitae iure. Fugit id ipsam magni, saepe assumenda, odio dicta maxime hic optio distinctio nesciunt dolores repudiandae quo expedita minus iure reiciendis architecto tempora, nam quidem! Ex id explicabo, aperiam quia esse laboriosam? Velit quos quae hic necessitatibus voluptatibus magni aperiam, amet voluptas minima ad aliquam, atque quo obcaecati laboriosam numquam, tempora dolor vitae. At tempora quod eos alias numquam deserunt. Vel ipsam incidunt enim dignissimos hic quod, reiciendis asperiores beatae voluptas ullam laudantium id magnam modi rerum fuga dolores voluptate at iure ad libero cupiditate blanditiis sint. Nemo dicta facilis excepturi ad consequuntur itaque libero laborum quos sunt rem sequi perspiciatis autem ipsa dolore sed fuga voluptatibus deleniti, doloribus, illo iure dolorem ea vero, molestiae nam. Sapiente blanditiis explicabo error exercitationem ea cupiditate adipisci ratione natus dolor! Obcaecati, aliquid minus.

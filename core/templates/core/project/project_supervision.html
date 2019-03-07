@@ -1,4 +1,6 @@
 {% extends "core/logged_base.html" %}
+{% load crispy_forms_tags %}
+
 
 {% block content %}
 {% if user.is_authenticated %}
@@ -15,14 +17,15 @@
 </div>
 <div class="wrapper">
     <div class="row milestone mt-3 mb-3 bg-dark text-light">
-        <div class="col-md-2 text-left pl-1">Semester1</div>
-        <div class="col-md-1 text-left pl-1">Status</div>
-        <div class="col-md-1 text-left pl-1">Start Date</div>
-        <div class="col-md-1 text-left pl-1">End Date</div>
-        <div class="col-md-2 text-left pl-1">Remaining Days</div>
-        <div class="col-md-2 text-left pl-1">Document Title</div>
-        <div class="col-md-2 text-left pl-1">Download Documentation</div>
-        <div class="col-md-1 text-left pl-1">Comments</div>
+        <div class="col text-left">Semester1</div>
+        <div class="col text-left ">Status</div>
+        <div class="col text-left">Start Date</div>
+        <div class="col text-left">End Date</div>
+        <div class="col text-left">Remaining Days</div>
+        <div class="col text-left">Document Title</div>
+        <div class="col text-left">Download Documentation</div>
+        <div class="col text-left">Comments</div>
+        <div class="col text-left">Complete</div>
     </div>
     {% for milestone in milestones %}
     <script>
@@ -37,28 +40,30 @@
             }
         </script>
     <div class="row milestone mt-1">
-        <div class="col-md-2 text-left pl-1"><a href=""></a>{{ milestone.milestone_name }}
+        <div class="col text-left"><a href=""></a>{{ milestone.milestone_name }}
             <input type="hidden" id="myVar" name="variable" value="{{ milestone.id }}">
         </div>
-        <div class="col-md-1 text-left pl-1">
-            {% if milestone.status == "NS" %}Not Started
-            {% elif milestone.status == "ON" %}Ongoing
+        <div class="col text-left">
+            {% if milestone.check_status == "NS" %}Not Started
+            {% elif milestone.check_status == "ON" %}Ongoing
             {% else %} Finished
             {% endif %}
         </div>
-        <div class="col-md-1 text-left pl-1">
+        <div class="col text-left ">
             {{ milestone.start_date }}
         </div>
-        <div class="col-md-1 text-left pl-1">{{ milestone.end_date}}</div>
-        <div class="col-md-2 text-left pl-1">
+        <div class="col text-left">
+            {{ milestone.end_date}}
+        </div>
+        <div class="col text-left">
             {% for key,values in remaining_days.items %}
             {% if key == milestone.id %}
             {{ values }}
             {% endif %}
             {% endfor %}
         </div>
-        <div class="col-md-2 text-left pl-1">Submit Documentation</div>
-        <div class="col-md-2 text-left pl-1">
+        <div class="col text-left ">{{ milestone.required_document }}</div>
+        <div class="col text-left ">
             <a href="" data-toggle="modal" id="modal-link" data-target="#{{ milestone.id }}">Download</a>
             <div class="modal" id="{{ milestone.id }}">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -93,44 +98,52 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-1 text-left pl-1">
-            <div class="col-md-1 text-left pl-1">
+        <div class="col text-left">
+        <div class="col text-left">
+                <a class="text-dark" href="" id="comment-modal" data-toggle="modal" data-target="#comment-id">
+                        {% for key, values in comment_count.items %}
+                        {% if key == milestone.id %}
+                        {{ values }}
+                        {% endif %}
+                        {% endfor %}
+                        <span class="fa fa-comment"></span>
+                </a>            
                 <div class="modal" id="comment-id">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
-                            <div class="modal-header">
+                            <div class="modal-header bg-secondary">
                                 <h4 class="modal-title">View Comments on {{ milestone.milestone_name }}</h4>
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
                             <div class="modal-body">
-                                <table id="comments">
-                                    {% for comment in comments %}
-                                    <tr>
-                                        {% if comment.sender == 0 %}
-                                        <td class="comment">
-                                            By {{ comment.supervisor.first_name}} - {{ comment.sent_date }} </br>
-                                            {{ comment.text }}
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                        {% else %}
-                                        <td>
-
-                                        </td>
-                                        <td class="comment">
-                                            By {{ comment.student.first_name}} - {{ comment.sent_date }} </br>
-                                            {{ comment.text }}
-                                        </td>
-                                        {% endif %}
-                                    </tr>
-                                    {% endfor %}
-                                </table>
                                 <form method="POST" action="{% url "view_comments" milestone.id student.id %}">
                                     {% csrf_token %}
-                                    {{ form }}
-                                    <button class="btn btn-success" type="submit">Send</button>
+                                    <div class="w-100">
+                                    {{ form | crispy }}
+                                    <button class="btn btn-outline-success pl-5 pr-5 float-right mb-5" type="submit">Add Comment</button>
+                                    <div class="clearfix"></div>
+                                    </div>
                                 </form>
+                                <div class="w-100 mb-5">
+                                {% for comment in comments %}
+                                {% if comment.milestone_id == milestone.id %}
+                                    {% if comment.sender == 0 %}
+                                    <div id="supervisor_comment" class="mb-2">
+                                        By {{ comment.supervisor.first_name}} - {{ comment.sent_date }}
+                                        <hr>
+                                        <p>{{ comment.text }}</p>                                      
+                                    </div>
+                                    {% else %}
+                                    <div id="student_comment" class="mb-1">
+                                        By {{ comment.student.first_name}} - {{ comment.sent_date }}
+                                        <hr>
+                                        <p>{{ comment.text }} Lorem ipsum dolor sit amet consectetur adipisicing elit. Id, magnam. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Architecto dolore doloremque nostrum asperiores iste optio ducimus a libero enim labore!
+                                        </p>
+                                    </div>
+                                    {% endif %}
+                                {% endif %}
+                                {% endfor %}                                
+                                </div>                                
                             </div>
 
                             <div class="modal-footer">
@@ -139,14 +152,34 @@
                         </div>
                     </div>
                 </div>
-                <a href="" id="comment-modal" data-toggle="modal" data-target="#comment-id">Comments</a>
-            </div>
+        </div>
+        </div>
+        <div class="col text-left">
+            <form action="{% url "close_milestone" milestone.id student.project.id %}">
+                {% csrf_token %}
+                <input type="hidden">
+                {% if 1 %}
+                <button class="btn btn-info disabled" typpe ="submit">
+                    close
+                </button>
+                {% endif %}
+            </form>
         </div>
     </div>
     {% endfor %}
+    <form action="{% url "close_project" student.project.id %}">
+            {% csrf_token %}
+            <input type="hidden">
+            {% if 1 %}
+            <button class="btn btn-info disabled" typpe ="submit">
+                Close Project
+            </button>
+            {% endif %}
+    </form>    
 </div>
-
 {% else %}
+User is student
 {% endif %}
 {% endif %}
+
 {% endblock %}

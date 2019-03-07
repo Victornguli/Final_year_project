@@ -80,17 +80,24 @@ body{
     display:flex;
     flex-direction: row;
     background-color: whitesmoke;
-    text-align: left;
+    text-align:  left;
     line-height: 20px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     border-bottom: 1px solid rgb(109, 108, 108);
+    border-top: 1px solid rgb(109, 108, 108);
+    margin-top: 20px;
 }
 
 .title {
-    margin: 15px 15px 15px 15px;
+    padding: 15px 5px 15px 15px;
     text-decoration: none;
     color: #417690;
+    border-right: 1px solid black;
+}
+
+#head-titles:first-child{
+    border-left: 1px solid black;
 }
 
 .title:hover{
@@ -134,16 +141,15 @@ body{
     line-height: 20px;
     font-size: 16px;
     font-weight: 300;
-    /* border-top: 1px solid rgb(184, 181, 181); */
     border-bottom: 1px solid rgb(184, 181, 181);
 
 }
 
 .project-info:hover{
     cursor: pointer;
-    transform: scale(1.005);
-    transition: transform 0.2s ease;
-    opacity: 1.5;
+    background-color: rgb(145, 145, 145);
+    /* transform: scale(1.005);
+    transition: transform 0.1s ease; */
 }
 
 
@@ -185,15 +191,29 @@ body{
     background-color: #ececec;
 }
 
-#comments{
+/* #comments{
     width: 100%;
-    text-align: center;
+    text-align: left;
 
+} */
+
+#supervisor_comment{
+    cursor: pointer;
+    background-color: rgb(196, 206, 250);
+    padding: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-#comments .comment{
+#student_comment{
+    cursor: pointer;
+    background-color: rgb(245, 213, 207);
+    padding: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* #comments .comment{
     padding: 10px;
-}
+} */
 
 /* MILESTONES */
 

@@ -77,7 +77,6 @@ def SelectAvailableDays(request):
     form = SelectAvailableDaysForm(request.POST)
     user = request.user
     exists = AvailableDay.objects.filter(supervisor_id = user.supervisor).count()
-    print (exists)
     if form.is_valid():
         monday = form.cleaned_data.get("monday")
         tuesday = form.cleaned_data.get("tuesday")
@@ -176,18 +175,18 @@ def StudentProject(request):
             comment_count = {}
             for milestone in milestones:
                 comment_count[milestone.id] = Comment.objects.filter(student_id = student.id, milestone_id=milestone.id).count()
-            print (milestone.id, comment_count)
             
             remaining_days = {}
             for milestone in milestones:
                 start_date = milestone.start_date
                 end_date = milestone.end_date
-                days = end_date - start_date
+                now = datetime.datetime.now().date()
+                days = end_date - now
                 remaining_days[milestone.id] = days.days
             
-            print (remaining_days)
+            
         else:
-            form = CreateProjectForm(request.POST)
+            form = CreateProjectForm(initial={"abstract_text":" "})
             return render(request, "core/project/project_progress.html",{"form":form})
 
         return render(request,"core/project/project_progress.html", {"milestones":milestones, "student":student,"remaining_days":remaining_days, "documents":documents, "form2":form2, "comments":comments, "comment_count":comment_count })
@@ -199,17 +198,35 @@ def project_supervision_view(request, student_id):
         student = Student.objects.get(pk=student_id)
         schedule = student.project.schedule
         milestones = Milestone.objects.filter(schedule_id=schedule.id)
+
+        # milestone_status = {}
+        # for milestone in milestones:
+        #     if milestone.check_status == "NS":
+        #         milestone_status[milestone.milestone_name] = "NS"
+        #     elif milestone.check_status == "ON":
+        #         milestone_status[milestone.milestone_name] = "ON"
+        #     else:
+        #         milestone_status[milestone.milestone_name] = "FN"
+
         documents = Document.objects.filter(student_id = student_id)
         comments = Comment.objects.all()
+        
+        comment_count = {}
+        for milestone in milestones:
+            comment_count[milestone.id] = Comment.objects.filter(student_id = student.id, milestone_id=milestone.id).count()
+
         remaining_days = {}
         for milestone in milestones:
             start_date = milestone.start_date
             end_date = milestone.end_date
-            days = end_date - start_date
-            remaining_days[milestone.id] = days.days
-        
-        print (remaining_days)
-        return render(request, "core/project/project_supervision.html",  {"milestones":milestones, "student":student,"remaining_days":remaining_days, "documents":documents, "comments":comments, "form":form})
+            now = datetime.datetime.now().date()
+            if now > end_date:
+                days = 0
+                remaining_days[milestone.id] = days
+            else:
+                days = end_date - now
+                remaining_days[milestone.id] = days.days
+        return render(request, "core/project/project_supervision.html",  {"milestones":milestones, "student":student,"remaining_days":remaining_days, "documents":documents, "comments":comments, "form":form, "comment_count":comment_count})
 
 def upload_file(request, milestone_id):
     if request.method == 'POST':
@@ -221,8 +238,6 @@ def upload_file(request, milestone_id):
             milestone = Milestone.objects.get(pk = milestone_id)            
             if user.is_student:
                 student_id = user.student.id
-            print (milestone.id)
-            print (document)
             Document.objects.create(document=document, title=title,student_id = student_id, milestone_id = milestone.id)
     else:
         form = UploadFileForm()
@@ -243,17 +258,24 @@ def createproject_view(request):
     if request.method == "POST":
         form = CreateProjectForm(request.POST, request.FILES)
         user = request.user
+
         if form.is_valid():
             if user.is_student:
                 student = user.student
             else:
                 pass
             title = form.cleaned_data.get("title")
+            abstract_text = form.cleaned_data.get("abstract")
+            document = form.cleaned_data.get("abstract_document")
             schedule = Schedule.objects.get(status=1)
-            project = Project.objects.create(title=title, schedule_id = schedule.id)
+            #Create Abstract
+            abstract = Abstract.objects.create(title=title, abstract_text=abstract_text, document=document)
+            #Create New Project
+            project = Project.objects.create(title=title, schedule_id = schedule.id, abstract_id=abstract.id)
             Student.objects.filter(id = student.id).update(project_id=project.id)
-            print (project.id)
+        
         return redirect(StudentProject)
+        
 
 def view_comment(request, milestone_id, student_id):
     if request.method == "POST":
@@ -287,7 +309,57 @@ def UpdateProfile(request):
 
 
 def ViewPastProjects(request):
-    projects = Project.objects.all()
+    pastprojects = PastProject.objects.all()
     students = Student.objects.all()
-    return render(request,"core/index.html", {"projects":projects,"students":students})
+    return render(request,"core/index.html", {"pastprojects":pastprojects,"students":students})
 
+def CloseProject(request, project_id, student_id):
+    PastProject.objects.add(project_id = project_id)
+    Project.objects.filter(pk=project_id).update(status=0)
+    Student.objects.filter(pk=student_id).update(status=0)
+    return response
+
+# def MilestoneStatus(request):
+#     if 
+
+def CloseMilestone(request, milestone_id, project_id):
+    students = Student.objects.all()
+
+    for student in students:
+        if student.project_id:
+            if student.project_id == project_id:
+                student = student
+    
+    milestone = Milestone.objects.get(pk=milestone_id)
+    if milestone.check_status == "NS" or milestone.check_status == "ON":
+        pass
+    else:
+        CompletedMilestones.objects.create(milestone_id=milestone_id, project_id=project_id)
+    return redirect(project_supervision_view, student.id)
+
+def CloseProject(request, project_id):
+    students = Student.objects.all()
+    for student in students:
+        if student.project_id:
+            if student.project_id == project_id:
+                student = student
+    
+    milestones = Milestone.objects.all()
+    completed_milestones = CompletedMilestones.objects.all()
+    project_status = False
+    for milestone in milestones:
+        for completed_milestone in completed_milestones:
+            if milestone.id == completed_milestone.milestone_id:
+                project_status = True
+            else:
+                project_status = False
+    if project_status == True:
+        PastProject.objects.create(project_id=project_id)
+        Project.objects.filter(pk=project_id).update(status=False)
+    else:
+        pass
+
+    return redirect(project_supervision_view, student.id)
+
+def ViewNotifications(request):
+    notifications = Notification.object

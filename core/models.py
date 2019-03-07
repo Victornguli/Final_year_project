@@ -1,6 +1,7 @@
 import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 class Schedule(models.Model):
     schedule_name = models.CharField(max_length = 100, default="")
@@ -11,22 +12,29 @@ class Schedule(models.Model):
     def __str__(self):
         return self.schedule_name
 
+class Abstract(models.Model):
+    title = models.CharField(max_length=50)
+    abstract_text = models.CharField(max_length=1000)
+    document = models.FileField(upload_to="abstract/")
+    upladed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
 class Project(models.Model):
     title = models.CharField(max_length=50,default="title")
     status = models.BooleanField(default = True)
     start_date = models.DateField(auto_now=False, auto_now_add=True)
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+    abstract = models.OneToOneField(Abstract, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         return self.title
 
-class PastProject(models.Model):
-    past_project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 class User(AbstractUser):
     is_student = models.BooleanField("student_status",default=False)
     is_supervisor = models.BooleanField("supervisor_status",default=False)
-
 
 class Supervisor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -36,7 +44,6 @@ class Supervisor(models.Model):
 
     def __str__(self):
         return self.first_name + " " + self.last_name   
-
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -51,6 +58,14 @@ class Student(models.Model):
 
     def __str__(self):
         return self.first_name + " " + self.last_name
+
+
+class PastProject(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.project.title
+
 
 class AvailableDay(models.Model):
     monday = models.TimeField(null=True)
@@ -102,15 +117,35 @@ class Milestone(models.Model):
     )
 
     milestone_name = models.CharField(max_length=100)
-    start_date = models.DateField(auto_now_add=False, auto_now=False)
-    end_date = models.DateField(auto_now_add=False, auto_now=False)
-    status = models.CharField(max_length=2, choices=milestone_status, default="NS")
+    start_date = models.DateField()
+    end_date = models.DateField()
+    #status = models.CharField(max_length=2, choices=milestone_status, default="NS")
+
+    @property
+    def check_status(self):
+        now = datetime.datetime.now().date()
+        if self.start_date > now:
+            self.status = "FN"
+            return "FN"
+        elif self.start_date < now and now < self.end_date:
+            self.status = "ON"
+            return "ON"
+        else:
+            self.status = "NS"
+
+            
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
     required_document = models.CharField(max_length=100, null=True)
     group = models.CharField(choices=milestone_group, default = "S1", max_length=2)
 
     def __str__(self):
         return self.milestone_name  
+
+
+class CompletedMilestones(models.Model):
+    milestone = models.ForeignKey(Milestone, on_delete=models.CASCADE)
+    project  = models.ForeignKey(Project, on_delete=models.CASCADE)
+
 
 class Document(models.Model):
     title = models.CharField(max_length=50)

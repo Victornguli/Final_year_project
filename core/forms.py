@@ -81,12 +81,29 @@ class UploadFileForm(forms.Form):
     document = forms.FileField()
 
 class CreateProjectForm(forms.Form):
-    title = forms.CharField(max_length=50, required=True)
+    title = forms.CharField(max_length=50, required=True, help_text="Enter your Project Title")
+    abstract = forms.CharField(
+        widget= forms.Textarea(
+            attrs={
+                "placeholder":"Type in your project abstract here"
+            }
+        ),
+        min_length=200, max_length=1000, required=True,
+        help_text="Your abstract should be more than 200 words"
+    )
+    abstract_document = forms.FileField(help_text="Upload your abstract document in a doc or docx format")
 
 class SendCommentForm(forms.Form):
     comment = forms.CharField(
         max_length=200,
-        widget=forms.Textarea()
+        initial = "Asas",
+        widget=forms.Textarea(
+            attrs={
+                "rows":"5",
+                "cols":"30",
+                "placeholder":"Add your comment here",
+            }
+        ),
     )
 
 class UpdateProfileForm(forms.Form):

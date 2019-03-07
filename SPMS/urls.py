@@ -32,6 +32,8 @@ urlpatterns = [
     path("project/view_comments(<milestone_id>[0-9]+)(<student_id>[0-9]+)", view_comment , name="view_comments"),
     path("supervisor/project", project_view , name="project"),
     path("supervisor/project_supervision(<student_id>[0-9]+)", project_supervision_view , name="project_supervision"),
+    path("supervisor/project_supervision/close_milestone(<milestone_id>[0-9]+)(<project_id>[0-9]+)", CloseMilestone , name="close_milestone"),
+    path("supervisor/project_supervision/close_project(<project_id>[0-9]+)", CloseProject , name="close_project"),
 
     # path("past-projects/", PastProjets, name="projects"),
     # path("accounts/login",include("django.auth.urls")),
