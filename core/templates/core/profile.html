@@ -14,7 +14,7 @@
         <span class="float-right">Welcome {{ user.student.first_name }}</span>    
 </div>
 <div class="wrapper">
-    <div class="w-50  m-auto">
+    <div class="w-50">
     <form action="{% url "student_view_profile" %}" method="POST">
         {% csrf_token %}
 
@@ -36,7 +36,7 @@
         <span class="float-right">Logged in as Supervisor</span>    
 </div>
 <div class="wrapper"> 
-    <div class="w-50 m-auto">
+    <div class="w-50">
     <form action="{% url "supervisor_update_profile" %}" method="POST">
         {% csrf_token %}
 

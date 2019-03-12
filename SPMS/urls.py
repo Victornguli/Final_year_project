@@ -7,6 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('demo/', chart_view , name = 'demo'),
     path('admin/', admin.site.urls),
     path("", ViewPastProjects , name="home"),
     path("accounts/", include("django.contrib.auth.urls")),

@@ -33,8 +33,16 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ["is_student", "is_supervisor"]
 
 class AvailableDayAdmin(admin.ModelAdmin):
-    list_display = [ "supervisor", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    list_display = ["supervisor", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
     list_filter = ["supervisor"]
+
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = ["supervisor","student", "date", "time", "approved"]
+    list_filter = ["supervisor","date","approved"]
+
+class DocumentAdmin(admin.ModelAdmin):
+    list_display = ["title", "document", "upladed_at", "student", "milestone"]
+    list_filter = ["student","milestone"]
 
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(PastProject, PastProjectAdmin)
@@ -44,3 +52,5 @@ admin.site.register(Supervisor, SupervisorAdmin)
 admin.site.register(Milestone, MilestoneAdmin)
 admin.site.register(Schedule, ScheduleAdmin)
 admin.site.register(AvailableDay, AvailableDayAdmin)
+admin.site.register(Appointment, AppointmentAdmin)
+admin.site.register(Document, DocumentAdmin)

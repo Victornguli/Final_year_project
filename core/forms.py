@@ -99,7 +99,7 @@ class SendCommentForm(forms.Form):
         initial = "Asas",
         widget=forms.Textarea(
             attrs={
-                "rows":"5",
+                "rows":"2",
                 "cols":"30",
                 "placeholder":"Add your comment here",
             }
@@ -117,3 +117,11 @@ class UpdateProfileForm(forms.Form):
     last_name = forms.CharField(max_length=50)
     user_name = forms.CharField(max_length=50)
     email = forms.EmailField(max_length=50)
+
+class TestForm(forms.Form):
+    phone_numbers = forms.CharField(max_length=100, 
+        widget=forms.Textarea()
+    )
+    message = forms.CharField(max_length=100, 
+        widget=forms.Textarea()
+    )

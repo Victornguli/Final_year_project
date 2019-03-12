@@ -6,6 +6,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import FileResponse
 from django.utils.text import slugify
 from django.contrib import messages
+from django.http import HttpResponse
+from collections import OrderedDict
+from fusioncharts import FusionCharts
 
 from .models import *
 from .forms import *
@@ -198,19 +201,8 @@ def project_supervision_view(request, student_id):
         student = Student.objects.get(pk=student_id)
         schedule = student.project.schedule
         milestones = Milestone.objects.filter(schedule_id=schedule.id)
-
-        # milestone_status = {}
-        # for milestone in milestones:
-        #     if milestone.check_status == "NS":
-        #         milestone_status[milestone.milestone_name] = "NS"
-        #     elif milestone.check_status == "ON":
-        #         milestone_status[milestone.milestone_name] = "ON"
-        #     else:
-        #         milestone_status[milestone.milestone_name] = "FN"
-
         documents = Document.objects.filter(student_id = student_id)
-        comments = Comment.objects.all()
-        
+        comments = Comment.objects.filter(student_id = student.id)    
         comment_count = {}
         for milestone in milestones:
             comment_count[milestone.id] = Comment.objects.filter(student_id = student.id, milestone_id=milestone.id).count()
@@ -228,6 +220,7 @@ def project_supervision_view(request, student_id):
                 remaining_days[milestone.id] = days.days
         return render(request, "core/project/project_supervision.html",  {"milestones":milestones, "student":student,"remaining_days":remaining_days, "documents":documents, "comments":comments, "form":form, "comment_count":comment_count})
 
+
 def upload_file(request, milestone_id):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -242,6 +235,7 @@ def upload_file(request, milestone_id):
     else:
         form = UploadFileForm()
     return redirect(StudentProject)
+
 
 def download_document(request, document_id):
     item = get_object_or_404(Document, pk=document_id)
@@ -279,13 +273,21 @@ def createproject_view(request):
 
 def view_comment(request, milestone_id, student_id):
     if request.method == "POST":
+        user = request.user
         form = SendCommentForm(request.POST, request.FILES)
         student = Student.objects.get(pk=student_id)
         if form.is_valid():
             text = form.cleaned_data.get("comment")
-            Comment.objects.create(text=text, student_id = student.id, supervisor_id=student.supervisor.id, milestone_id=milestone_id, sender = 1)
+            if user.is_student:
+                Comment.objects.create(text=text, student_id = student.id, supervisor_id=student.supervisor.id, milestone_id=milestone_id, sender = 1)
+                return redirect(StudentProject)
 
-    return redirect(StudentProject)
+            else:
+                supervisor_id = student.supervisor_id
+                supervisor = Supervisor.objects.get(pk=supervisor_id)
+                Comment.objects.create(text=text, student_id = student.id, supervisor_id=student.supervisor.id, milestone_id=milestone_id, sender = 0)
+                return redirect(project_supervision_view, student.id)
+
 
 def UpdateProfile(request):
     user =  request.user
@@ -309,9 +311,20 @@ def UpdateProfile(request):
 
 
 def ViewPastProjects(request):
+    if request.method == "POST":
+        form = TestForm(request.POST)
+        user = request.user
+        if form.is_valid():
+            for phone in form.cleaned_data.get("phone_numbers").splitlines():
+                message = form.cleaned_data.get("message")
+                access_code = user.profile.access_code
+                service_id = user.profile.access_id
+                #YourModel.Objects.create(phone_number = phone, message=message)
+                #Save Your phone number and message here => each loop saves one phone number and the message 
     pastprojects = PastProject.objects.all()
     students = Student.objects.all()
     return render(request,"core/index.html", {"pastprojects":pastprojects,"students":students})
+
 
 def CloseProject(request, project_id, student_id):
     PastProject.objects.add(project_id = project_id)
@@ -319,8 +332,6 @@ def CloseProject(request, project_id, student_id):
     Student.objects.filter(pk=student_id).update(status=0)
     return response
 
-# def MilestoneStatus(request):
-#     if 
 
 def CloseMilestone(request, milestone_id, project_id):
     students = Student.objects.all()
@@ -336,6 +347,7 @@ def CloseMilestone(request, milestone_id, project_id):
     else:
         CompletedMilestones.objects.create(milestone_id=milestone_id, project_id=project_id)
     return redirect(project_supervision_view, student.id)
+
 
 def CloseProject(request, project_id):
     students = Student.objects.all()
@@ -361,5 +373,49 @@ def CloseProject(request, project_id):
 
     return redirect(project_supervision_view, student.id)
 
-def ViewNotifications(request):
-    notifications = Notification.object
+
+def ViewGanttChart(request):
+    milestones = Milestone.objects.all()
+
+
+def chart_view(request): 
+    #Chart data is passed to the `dataSource` parameter, like a dictionary in the form of key-value pairs.
+    dataSource = OrderedDict()
+
+    # The `chartConfig` dict contains key-value pairs of data for chart attribute
+    chartConfig = OrderedDict()
+    chartConfig["caption"] = "Countries With Most Oil Reserves [2017-18]"
+    chartConfig["subCaption"] = "In MMbbl = One Million barrels"
+    chartConfig["xAxisName"] = "Country"
+    chartConfig["yAxisName"] = "Reserves (MMbbl)"
+    chartConfig["numberSuffix"] = "K"
+    chartConfig["theme"] = "fusion"
+
+    # The `chartData` dict contains key-value pairs of data
+    chartData = OrderedDict()
+    chartData["Venezuela"] = 290
+    chartData["Saudi"] = 260
+    chartData["Canada"] = 180
+    chartData["Iran"] = 140
+    chartData["Russia"] = 115
+    chartData["UAE"] = 100
+    chartData["US"] = 30
+    chartData["China"] = 30
+
+    dataSource["chart"] = chartConfig
+    dataSource["data"] = []
+
+    # Convert the data in the `chartData`array into a format that can be consumed by FusionCharts.
+    #The data for the chart should be in an array wherein each element of the array
+    #is a JSON object# having the `label` and `value` as keys.
+
+    #Iterate through the data in `chartData` and insert into the `dataSource['data']` list.
+    for key, value in chartData.items():
+        data = {}
+        data["label"] = key
+        data["value"] = value
+        dataSource["data"].append(data)
+    # Create an object for the column 2D chart using the FusionCharts class constructor
+    # The chart data is passed to the `dataSource` parameter.
+    column2D = FusionCharts("column2d", "myFirstChart", "1000", "600", "myFirstchart-container", "json", dataSource)
+    return render(request, 'fusion/fusion.html', {'output': column2D.render()})

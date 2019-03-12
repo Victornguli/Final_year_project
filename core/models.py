@@ -90,12 +90,18 @@ class Appointment(models.Model):
 
     Approved = "Approved"
     Applied = "Applied"
+    Rejected = "Rejected"
+
 
     status = (
         (Approved,"Approved"),
         (Applied,"Applied"),
+        (Rejected,"Rejected"),
     )
     approved = models.CharField(max_length = 10 , choices=status, default="Applied")
+
+    def __str__(self):
+        return self.approved
 
 
 class Milestone(models.Model):
@@ -104,23 +110,20 @@ class Milestone(models.Model):
     Finished = "FN"
     first_semester = "S1"
     second_semester = "S2"
-
     milestone_group = (
         (first_semester, "Semester One"),
         (second_semester, "Semester Two"),
     )
-
     milestone_status = (
         (Not_Started, "Not Started"),
         (Ongoing, "Ongoing"),
         (Finished, "Finished"),
     )
-
     milestone_name = models.CharField(max_length=100)
     start_date = models.DateField()
     end_date = models.DateField()
     #status = models.CharField(max_length=2, choices=milestone_status, default="NS")
-
+    
     @property
     def check_status(self):
         now = datetime.datetime.now().date()
@@ -133,7 +136,6 @@ class Milestone(models.Model):
         else:
             self.status = "NS"
 
-            
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
     required_document = models.CharField(max_length=100, null=True)
     group = models.CharField(choices=milestone_group, default = "S1", max_length=2)

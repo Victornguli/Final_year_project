@@ -32,7 +32,7 @@
 
 {% endif %}
 
-<div class="wrapper w-100">
+<div class="wrapper">
     <div id="intro">
         <h2>Past Student Projects in Computer Science Department</h2>
         <p>This list of past projects that students in the Computer Science Department have previously completed is
@@ -49,7 +49,76 @@
             projects
 
         </div>
-        <div class="flex-container">
+        <table class="table table-striped table-hover">
+            <thead>
+                <th>Year</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Supervisor</th>
+                <th>Project Title</th>
+                <th>More Info</th>
+            </thead>      
+            {% for pastproject in pastprojects %}
+            <tr>
+                <td>{{ pastproject.project.schedule.schedule_name }}</td>
+                {% for student in students %}
+                {% if student.project_id == pastproject.project_id %}                
+                <td>
+                    {{ student.first_name }}
+                </td>
+                <td>
+                    {{ student.last_name }}
+                </td>
+                <td>
+                    {{ student.supervisor.first_name }}, {{ student.supervisor.last_name }}
+                </td>
+                {% endif %}
+                {% endfor %}
+                <td>{{ pastproject.project.title }}</td>
+                <td>
+                    <a href="" data-toggle="modal" data-target="#{{ pastproject.id }}"> More Info {{ project.id }}</a>                    
+                </td>
+            </tr>
+            <div class="modal" id="{{ pastproject.id }}">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="">Project Title : {{ pastproject.project.title }}</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                            {% for student in students %}
+                            {% if student.project_id == pastproject.project.id %}
+                            <div>
+                                <p>Name of student : {{ student.first_name }} {{ student.last_name }}</p>
+                                <p>Name of supervisor : {{ student.supervisor.first_name }} {{ student.supervisor.last_name }}</p> 
+                                <p>Year Done : {{ pastproject.project.schedule }}</p>
+                            </div>
+                            <hr>
+                            <h5>
+                                Abstract
+                            </h5>
+                            <p>
+                                {{ pastproject.project.abstract.abstract_text }}
+                            </p>
+                            <div>
+                                <a href="">
+                                    <button class="btn btn-outline-success mt-3 float-right">Download Abstract</button>
+                                </a>
+                                <div class="clearfix"></div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>            
+            {% endfor %}
+        </table>
+        <!-- <div class="flex-container">
             <div id="head-titles">
                 <div class="title year">Year</div>
                 <div class="title lastname">Last Name</div>
@@ -112,10 +181,8 @@
                 </div>                
             </div>
             {% endfor %}
-        </div>
+        </div> -->
     </div>
 </div>
 
 {% endblock %}
-
-Lorem ipsum dolor, sit amet consectetur adipisicing elit. Omnis temporibus, earum labore ipsum voluptatibus sint pariatur consectetur explicabo officiis quia maiores id sunt dicta aut dolore maxime error. Accusantium, molestiae nulla eos saepe minima aspernatur. Optio illo nesciunt quos, eaque officiis magni quaerat modi. Doloribus, amet? A error repellat vitae iure. Fugit id ipsam magni, saepe assumenda, odio dicta maxime hic optio distinctio nesciunt dolores repudiandae quo expedita minus iure reiciendis architecto tempora, nam quidem! Ex id explicabo, aperiam quia esse laboriosam? Velit quos quae hic necessitatibus voluptatibus magni aperiam, amet voluptas minima ad aliquam, atque quo obcaecati laboriosam numquam, tempora dolor vitae. At tempora quod eos alias numquam deserunt. Vel ipsam incidunt enim dignissimos hic quod, reiciendis asperiores beatae voluptas ullam laudantium id magnam modi rerum fuga dolores voluptate at iure ad libero cupiditate blanditiis sint. Nemo dicta facilis excepturi ad consequuntur itaque libero laborum quos sunt rem sequi perspiciatis autem ipsa dolore sed fuga voluptatibus deleniti, doloribus, illo iure dolorem ea vero, molestiae nam. Sapiente blanditiis explicabo error exercitationem ea cupiditate adipisci ratione natus dolor! Obcaecati, aliquid minus.

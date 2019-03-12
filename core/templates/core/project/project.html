@@ -17,13 +17,15 @@
 </div>
 
 <div class="wrapper">
-    <table class="table">
+    <table class="table table-striped table-hover">
         <h6 class="mt-5 mb-3">Supervision List</h6>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Registration Number</th>
-        <th>Course</th>
-        <th>Project Title</th>
+        <thead class="thead-primary">
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Registration Number</th>
+            <th>Course</th>
+            <th>Project Title</th>
+        </thead>
         {% for student in students %}
         {% if student.status %}
         <tr>

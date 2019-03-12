@@ -69,9 +69,9 @@
 
 
 
-    <div class="w-100 m-auto text-left">
+    <div class="">
 
-        <table class="table w-100">
+        <table class="table">
             <h5>Available Appointment Time Slots</h5>
             <th>Day</th>
             <th>Time slot</th>
@@ -145,11 +145,10 @@
     <a href="{% url  "appointments" %}">Pending Appointments</a>
     &frasl;
     <a href="{% url  "request_appointment" %}">Request Appoinmtent</a>
-    <span class="float-right">Welcome {{ user.student.first_name }}</span>    
+    <span class="float-right">Logged in as Student</span>    
 </div>    
 <div class="wrapper">    
-    <h5 class="mb-2">Logged in as student</h5>
-    <table class="table w-100">
+    <table class="table table-striped">
         <caption class="mb-3">Requested Appointments</caption>
         <th>Date</th>
         <th>Time</th>

@@ -11,10 +11,22 @@
   <link rel="stylesheet" href="{% static "/core/css/main.css" %}">
 </head>
 <body>
-	<div>
+	<div class="content">
                     {% if user.is_authenticated %}
-                    <nav class="navbar navbar-expand-lg navbar-light ">
-                        <a class="navbar-brand" href="{% url "home" %}"><h4>Student Project Management System</h4></a>
+                    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+                        <a class="navbar-brand" href="{% url "home" %}"><h5><b>
+                            Student Project Management System
+                        </b></h5>
+                      </a>
+                      <div class="header-content header-content-first">
+                          <div class="header-column icon">
+                            <i class="icon-time"></i>
+                          </div>
+                          <div class="header-column">
+                            <span id="date" class="date"></span><br>
+                            <span class="time" id="clock">13:57</span>
+                          </div>
+                      </div>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                           <span class="navbar-toggler-icon"></span>
                         </button>
@@ -52,10 +64,12 @@
                             </li>                          
                           </ul>
                         </div>
-                      </nav>                    
+                      </nav>                             
+                      <div class="clearfix"></div>
                     {% else %}
-                    <nav class="navbar navbar-expand-lg navbar-light ">
-                            <a class="navbar-brand" href="{% url "home" %}"><h4>Student Project Management System</h4></a>
+                    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+                            <a class="navbar-brand" href="{% url "home" %}"><h5>
+                             <b>Student Project Management System</b></h5></a>
                             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                               <span class="navbar-toggler-icon"></span>
                             </button>
@@ -69,7 +83,7 @@
                                 </a>
                                 </li>                                  
                                 <li class="nav-item">
-                                    <a href="{% url "login" %}" class="nav-link" id="login">Log in</a>
+                                    <a href="{% url "login" %}" class="nav-link">Log in</a>
                                 </li>
                                 <li class="nav-item" id="signup">
                                   <a class="nav-link" href="{% url "select_signup" %}">Register
@@ -78,11 +92,23 @@
                               </ul>
                             </div>
                           </nav>
-                    {% endif %}	
+                          <div class="clearfix"></div>
+                    {% endif %}	                    
 		<div class="main">
+        <ul class="side-nav">
+            <li class="side-nav-item"><a class="active" href="#home">Home</a></li>
+            <li  class="side-nav-item"><a href="#news">News</a></li>
+            <li  class="side-nav-item"><a href="#contact">Contact</a></li>
+            <li  class="side-nav-item"><a href="#about">About</a></li>
+        </ul>      
       {% block content %}
+      
 			{% endblock %}	
-		</div>
-	</div>		
+    </div>
+  </div>
+  <script>
+    var date = new Date()
+    document.getElementById("date").innerHTML = date.toUTCString()
+  </script>		
 </body>
 </html>

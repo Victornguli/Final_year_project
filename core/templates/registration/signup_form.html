@@ -1,4 +1,4 @@
-{% extends "registration/base.html" %}
+{% extends "core/logged_base.html" %}
 {% load crispy_forms_tags %}        
 {% block content %}
 
@@ -21,13 +21,13 @@
 {% endif %}
 
 <div class="wrapper">
-  <div class="w-50 m-auto text-left">
+  <div class="w-50 text-left">
     {% if "/accounts/signup/student/" == request.path %}
     <h4 class="mb-3"> <b>Student Registration</b></h4>
     <form action="{% url "student_signup" %}" method="POST">
       {% csrf_token %}
       {{ form | crispy }}
-      <div class="w-100 m-auto text-right">
+      <div class="w-100  m-auto text-right">
         <button class="btn btn-outline-success pl-4 pr-4 mb-5" type="submit">Sign Up</button>
       </div>
     </form>    
