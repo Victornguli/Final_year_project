@@ -44,6 +44,11 @@ class DocumentAdmin(admin.ModelAdmin):
     list_display = ["title", "document", "upladed_at", "student", "milestone"]
     list_filter = ["student","milestone"]
 
+class GroupAdmin(admin.ModelAdmin):
+    list_display = [ "group", "start_date", "end_date"]
+    list_filter = ["group"]
+
+
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(PastProject, PastProjectAdmin)
 admin.site.register(User, UserAdmin)
@@ -54,3 +59,4 @@ admin.site.register(Schedule, ScheduleAdmin)
 admin.site.register(AvailableDay, AvailableDayAdmin)
 admin.site.register(Appointment, AppointmentAdmin)
 admin.site.register(Document, DocumentAdmin)
+admin.site.register(Group, GroupAdmin)

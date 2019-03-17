@@ -7,14 +7,14 @@
         <script src="http://localhost:80/www.w3schools.com/ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="http://localhost:80/www.w3schools.com/cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
         <script src="http://localhost:80/www.w3schools.com/maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>  
-        <script type="text/javascript" src="http://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
-        <script type="text/javascript" src="http://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js">
         </script>    
         <script type="text/javascript" src="{% static "core/fusion/fusioncharts.js" %}"></script>
         <script type="text/javascript" src="{% static "core/fusion/themes/fusioncharts.theme.fusion.js" %}"></script>
         <link rel="stylesheet" href="{% static "/core/css/main.css" %}">
     </head>
     <body>
-        <div id="myFirstchart-container">{{ output|safe }}</div>
+        <div id="chart-1" class="ml-auto mr-auto w-75 mt-5">
+            {{ output|safe }}
+        </div>
     </body>
 </html>

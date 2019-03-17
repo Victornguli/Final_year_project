@@ -145,7 +145,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 SUIT_CONFIG = {
-    'ADMIN_NAME': 'Student Project Management System',
+    'ADMIN_NAME': 'SPMS Adminstration',
     'SHOW_REQUIRED_ASTERISK': True,
     'CONFIRM_UNSAVED_CHANGES': True,
     'MENU_ICONS': {

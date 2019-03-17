@@ -289,3 +289,79 @@ body{
     width: 100%;
     margin: auto;
 }
+
+.tip{
+    position: relative;
+    display: inline-block;
+}
+/* Tooltip text */
+.tip .tiptext {
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+    visibility: hidden;
+    width: 200px;
+    background-color: rgb(163, 162, 162);
+    color: #fff;
+    /* text-align: center; */
+    padding: 5px;
+    border-radius: 6px;
+ 
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tip:hover .tiptext {
+    visibility: visible;
+}
+
+.tip .tiptext::after {
+    content: " ";
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(163, 163, 163) transparent transparent transparent;
+}
+
+
+
+<table class="table table-striped table-hover w-50">
+<thead>
+    <th></th>
+    <th></th>
+    <th></th>
+</thead>
+{% for field in form2 %}
+<tr>
+<div class="input-group date w-75 m-auto time1" id="datetimepicker1" data-target-input="nearest">
+    <td>
+        <div class= "">
+            {{ field.label }}
+        </div>
+    </td>
+    <td>
+        <div class="ml-5">
+            <div class="input-group-append float-right time2" data-target="#datetimepicker1" data-toggle="datetimepicker">
+            {{ field }}
+            <span class="input-group-text"><i class="fa fa-clock-o"></i></span>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </td>
+    <td>
+        <span class="input-group-text ml-4 tip">
+            <i class="fa fa-close"></i>
+            <span class="tiptext">
+                Delete the saved timeslot
+            </span>
+        </span>
+    </td>
+</div>
+</tr>
+{% endfor %}
+</table>

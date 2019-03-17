@@ -59,13 +59,62 @@ class CreateAppointmentForm(forms.Form):
     time = forms.DateTimeField(widget = forms.DateTimeInput)
 
 class SelectAvailableDaysForm(forms.Form):
-    monday = forms.TimeField(required=False)
-    tuesday = forms.TimeField(required=False)
-    wednesday = forms.TimeField(required=False)
-    thursday = forms.TimeField(required=False)
-    friday = forms.TimeField(required=False)
-    saturday = forms.TimeField(required=False)
-    sunday = forms.TimeField(required=False)
+    monday = forms.TimeField(
+        input_formats="%H:%M",
+        widget=forms.TimeInput(attrs={
+        'class': 'form-control datetimepicker-input',
+        'data-target': '#datetimepicker1'
+        }),
+        required=False,
+        )
+    tuesday = forms.TimeField(
+        input_formats=["%H:%M"],
+        widget=forms.TimeInput(attrs={
+        'class': 'form-control datetimepicker-input',
+        'data-target': '#datetimepicker2'
+        }),
+        required=False,
+        )    
+    wednesday = forms.TimeField(
+        input_formats=["%H:%M"],
+        widget=forms.TimeInput(attrs={
+        'class': 'form-control datetimepicker-input',
+        'data-target': '#datetimepicker3'
+        }),
+        required=False,
+        )    
+    thursday = forms.TimeField(
+        input_formats=["%H:%M"],
+        widget=forms.TimeInput(attrs={
+        'class': 'form-control datetimepicker-input',
+        'data-target': '#datetimepicker4'
+        }),
+        required=False,
+        )    
+    friday = forms.TimeField(
+        input_formats=["%H:%M"],
+        widget=forms.TimeInput(attrs={
+        'class': 'form-control datetimepicker-input',
+        'data-target': '#datetimepicker5'
+        }),
+        required=False,
+        )    
+    saturday = forms.TimeField(
+        input_formats=["%H:%M"],
+        widget=forms.TimeInput(attrs={
+        'class': 'form-control datetimepicker-input',
+        'data-target': '#datetimepicker6'
+        }),
+        required=False,
+        )    
+    sunday = forms.TimeField(
+        input_formats=["%H:%M"],
+        widget=forms.TimeInput(attrs={
+        'class': 'form-control datetimepicker-input',
+        'data-target': '#datetimepicker7'
+        }),
+        required=False,
+        )
 
 class SetScheduleForm(forms.Form):
     start_date = forms.DateField(required="False")

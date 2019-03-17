@@ -1,4 +1,6 @@
 import os
+import json, io
+from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import login
 from django.views.generic import CreateView
@@ -6,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import FileResponse
 from django.utils.text import slugify
 from django.contrib import messages
-from django.http import HttpResponse
+
 from collections import OrderedDict
 from fusioncharts import FusionCharts
 
@@ -29,12 +31,6 @@ class StudentSignUp(CreateView):
         user = form.save()
         login(self.request, user)
         return redirect('home')
-
-
-# def Index(request):
-#     form = UserCreationForm()
-#     return render(request, "core/index.html", {"form":form})
-
 
 class SupervisorSignUp(CreateView):
     model = User
@@ -95,9 +91,78 @@ def SelectAvailableDays(request):
         else:
             pass
 
-        return render(request, "core/select_available.html" , {"form2":form})
-    return render(request, "core/select_available.html" , {"form2":form})    
+        return render(request, "core/select_available.html",{"form2":form})
+    return redirect(SelectAvailableDays)    
 
+def SaveAvailableDays(request):
+    form = SelectAvailableDaysForm(request.POST)
+    user = request.user
+    exists = AvailableDay.objects.filter(supervisor_id = user.supervisor).count()
+    supervisor = user.supervisor
+    monday_time = form.data["monday"].split(":")
+    if monday_time.__len__() >= 2 :
+        hour = monday_time[0]
+        minute = monday_time[1]
+        monday = datetime.time(int(hour),int(minute),00,000000)
+        AvailableDay.objects.filter(supervisor_id=supervisor.id).update(monday=monday)
+    else:
+        pass
+    tuesday_time = form.data["tuesday"].split(":")
+    if tuesday_time.__len__() >= 2:
+        hour = tuesday_time[0]
+        minute = tuesday_time[1]
+        tuesday = datetime.time(int(hour),int(minute),00,000000)
+        AvailableDay.objects.filter(supervisor_id=supervisor.id).update(tuesday=tuesday)
+    else:
+        pass
+    wednesday_time = form.data["wednesday"].split(":")
+    if wednesday_time.__len__() >= 2:
+        hour = wednesday_time[0]
+        minute = wednesday_time[1]
+        wednesday = datetime.time(int(hour),int(minute),00,000000)
+        AvailableDay.objects.filter(supervisor_id=supervisor.id).update(wednesday=wednesday)
+    else:
+        pass
+    thursday_time = form.data["thursday"].split(":")
+    print(thursday_time.__len__())
+    if thursday_time.__len__() >= 2:
+        hour = thursday_time[0]
+        minute = thursday_time[1]
+        thursday = datetime.time(int(hour),int(minute),00,000000)
+        AvailableDay.objects.filter(supervisor_id=supervisor.id).update(thursday=thursday)
+    else:
+        pass
+    friday_time = form.data["friday"].split(":")
+    if friday_time.__len__() >= 2:
+        hour = friday_time[0]
+        minute = friday_time[1]
+        friday = datetime.time(int(hour),int(minute),00,000000)
+        AvailableDay.objects.filter(supervisor_id=supervisor.id).update(friday=friday)
+    else:
+        pass
+    saturday_time = form.data["saturday"].split(":")
+    if saturday_time.__len__() >= 2:
+        hour = saturday_time[0]
+        minute = saturday_time[1]
+        saturday = datetime.time(int(hour),int(minute),00,000000)
+        AvailableDay.objects.filter(supervisor_id=supervisor.id).update(saturday=saturday)
+    else:
+        pass
+    sunday_time = form.data["sunday"].split(":")
+    if sunday_time.__len__() >= 2:
+        hour = sunday_time[0]
+        minute = sunday_time[1]
+        sunday = datetime.time(int(hour),int(minute),00,000000)
+        AvailableDay.objects.filter(supervisor_id=supervisor.id).update(sunday=sunday)
+    else:
+        pass
+    return redirect(SelectAvailableDays)
+
+def DeleteAvailableDays(request, availableday_id):
+    available_day = AvailableDay.objects.get(pk=availableday_id)
+    user = request.user
+    if user.is_supervisor():
+        AvailableDay.filter(pk=availableday_id).update()
 
 def ViewAvailableDays(request):
     days = AvailableDay.objects.all()
@@ -374,48 +439,127 @@ def CloseProject(request, project_id):
     return redirect(project_supervision_view, student.id)
 
 
-def ViewGanttChart(request):
+def chart_view(request):
     milestones = Milestone.objects.all()
+    groups = Group.objects.all()
+    group1 = Group.objects.get(pk=1)
+    group2 = Group.objects.get(pk=2)
+    gantt_info = {
+        "chart":{
+            "dateformat": "mm/dd/yyyy",
+            "caption": "Final Year Project",
+            "theme": "ocean",
+            "canvasborderalpha": "40",
+            "ganttlinealpha": "50"
+        },
+        
+        "tasks":{
+            "color": "#5D62B5",
+            "task":[
 
+            ]          
+        }, 
+        "processes" : {
+          "headertext": "Task",
+          "headeralign": "left",
+          "fontsize": "14",
+          "isbold": "0",
+          "align": "left",
+          "process": [
+          ] 
+        }, 
+        "categories":[
+            {
+              "category":[
 
-def chart_view(request): 
-    #Chart data is passed to the `dataSource` parameter, like a dictionary in the form of key-value pairs.
-    dataSource = OrderedDict()
+              ] 
+            },
+            {
+              "category": [
+          {
+            "start": "09/10/2018",
+            "end": "09/30/2018",
+            "label": "September"
+          },
+          {
+            "start": "10/01/2018",
+            "end": "10/31/2018",
+            "label": "October"
+          },
+          {
+            "start": "11/01/2018",
+            "end": "11/30/2018",
+            "label": "November"
+          },
+          {
+            "start": "12/01/2018",
+            "end": "12/31/2018",
+            "label": "December"
+          },          
+          {
+            "start": "01/01/2019",
+            "end": "01/31/2019",
+            "label": "January"
+          },          {
+            "start": "02/01/2019",
+            "end": "02/28/2019",
+            "label": "February"
+          },          {
+            "start": "03/01/2019",
+            "end": "03/31/2019",
+            "label": "March"
+          },          
+          {
+            "start": "04/01/2019",
+            "end": "04/10/2019",
+            "label": "April"
+          },
+              ]
+            }
+        ]
+    }
+    inner_dict = {}
+    
+    week = 0
+    for milestone in milestones:
+        gantt_info["tasks"]["task"].append({"start": milestone.start_date.__str__(), "end": milestone.end_date.__str__()})
+        gantt_info["processes"]["process"].append({"label" : milestone.milestone_name})
+        week += 1
+    
+    for group in groups:
+        if group.group == "S1":
+              label = "Semester One"
+        else:
+              label = "Semester Two"
 
-    # The `chartConfig` dict contains key-value pairs of data for chart attribute
-    chartConfig = OrderedDict()
-    chartConfig["caption"] = "Countries With Most Oil Reserves [2017-18]"
-    chartConfig["subCaption"] = "In MMbbl = One Million barrels"
-    chartConfig["xAxisName"] = "Country"
-    chartConfig["yAxisName"] = "Reserves (MMbbl)"
-    chartConfig["numberSuffix"] = "K"
-    chartConfig["theme"] = "fusion"
+        gantt_info["categories"][0]["category"].append(
+          {"start":group.start_date.__str__(), "end":group.end_date.__str__(), "label":label}
+          )
+        # gantt_info["categories"][0]["category"].append(
+        #   {"start":group2.start_date.__str__(), "end":group2.end_date.__str__(), "label":"Semester Two"})
+        # gantt_info["categories"][1]["category"].append({"start": milestone.start_date.__str__(), "end":milestone.end_date.__str_    "label":"W"+ str(week)})       
 
-    # The `chartData` dict contains key-value pairs of data
-    chartData = OrderedDict()
-    chartData["Venezuela"] = 290
-    chartData["Saudi"] = 260
-    chartData["Canada"] = 180
-    chartData["Iran"] = 140
-    chartData["Russia"] = 115
-    chartData["UAE"] = 100
-    chartData["US"] = 30
-    chartData["China"] = 30
+    # gantt_info["tasks"] = tasks
+    # gantt_info["processes"] = processes
+    # for milestone in milestones:
+    #     processes["process"].append(inner_dict)
+    #     tasks["task"].append(inner_dict)
+    #     tasks["task"][0]["start"] = milestone.start_date.__str__()
+    #     tasks["task"][0]["end"] = milestone.end_date.__str__()
+    #     processes["process"][0]["task"] = milestone.milestone_name
 
-    dataSource["chart"] = chartConfig
-    dataSource["data"] = []
+    chart = gantt_info  
+    gantt_info_json = json.dumps(gantt_info)
+    print (gantt_info_json)
 
-    # Convert the data in the `chartData`array into a format that can be consumed by FusionCharts.
-    #The data for the chart should be in an array wherein each element of the array
-    #is a JSON object# having the `label` and `value` as keys.
+    chartObj = FusionCharts(
+        'gantt',
+        'ex1',
+        '1000',
+        '500',
+        'chart-1',
+        'json',
+        json.dumps(chart) 
+        )
 
-    #Iterate through the data in `chartData` and insert into the `dataSource['data']` list.
-    for key, value in chartData.items():
-        data = {}
-        data["label"] = key
-        data["value"] = value
-        dataSource["data"].append(data)
-    # Create an object for the column 2D chart using the FusionCharts class constructor
-    # The chart data is passed to the `dataSource` parameter.
-    column2D = FusionCharts("column2d", "myFirstChart", "1000", "600", "myFirstchart-container", "json", dataSource)
-    return render(request, 'fusion/fusion.html', {'output': column2D.render()})
+    return render(request, 'fusion/fusion.html', {'output': chartObj.render()})

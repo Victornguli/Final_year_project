@@ -16,6 +16,7 @@ urlpatterns = [
     path("accounts/signup/supervisor/", SupervisorSignUp.as_view(), name = "supervisor_signup"),
     path("appointments/request_appointment", RequestAppointment , name="request_appointment"),
     path("appointments/select_days", SelectAvailableDays , name="select_days"),
+    path("appointments/save_days", SaveAvailableDays , name="save_days"),
     path("appointments/view_appointments", ViewAppointments , name="appointments"),
     path("appointments/approve_appointment(<appointment_id>[0-9]+)",ApproveAppointment, name="approve_appointment"),
     path("appointments/reject_appointment(<appointment_id>[0-9]+)", RejectAppointment , name="reject_appointment"),

@@ -17,28 +17,75 @@
 </div> 
 <div class="wrapper">
 <h6 class="w-75 m-auto pb-4">Select available time slots</h6>
-<form action="{% url "select_days" %}" method="POST">
-        {% csrf_token %}
-        {{ form2 | crispy }}
-        {% for field in form2 %}
-<div class="w-75 text-left m-auto">
-<div class="mb-3">
-<span class="label">{{ field.label_tag }}</span>
-<div class="field float-right">{{ field }}</div>
-</div>
-        {% for error in field.errors %}
-        <div>
-            <div class="alert alert-danger" style="width:100%; text-align:left">{{ error }}</div>
-        </div>
-{% endfor %}
-
-</div>
-{% endfor %}
-<!-- <input type="submit" value="Sign Up"> -->
-<div class="w-75 m-auto text-left">
-<button class="btn btn-success pl-4 pr-4"	type="submit">Submit</button>
-</div>
+<form action="{% url "save_days" %}" method="POST">
+    {% csrf_token %}
+    <div class="w-100">
+            <table class="table table-hover table-bordered table-striped ">
+                <thead class="thead-dark">
+                    <th class="pl-2">Day</th>
+                    <th class="pl-2">Update/Add Time Slot</th>
+                    <th class="text-right pr-2">Delete Time Slot</th>
+            </thead>
+            {% for field in form2 %}
+            <tr> 
+            <td class="mb-4">
+                <div class= "pl-2">
+                    {{ field.label }}
+                </div>
+            </td>
+            <td>
+            <div class="input-group date time1" id="datetimepicker1" data-target-input="nearest">
+                <div class="mr-3 float-right">
+                    <div class="input-group-append time2" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                    {{ field }}
+                    <span class="input-group-text"><i class="fa fa-clock-o"></i></span>
+                    </div>
+                </div>
+                </td>
+                <td>
+                <span class="input-group-text tip">
+                    <i class="fa fa-close"></i>
+                    <span class="tiptext">
+                        Delete the saved timeslot
+                    </span>
+                </span>
+                <div class="clearfix"></div>
+                </td>
+            </div>
+            </tr>
+            {% endfor %}
+            <table>
+            <script>
+    
+            $(function () {
+              var count = 0;
+              var id_count = 1;
+    
+              //Django template loop to dynamically update timePicker
+              {% for field in form2 %}
+    
+                var id = "datetimepicker"+id_count;
+                var dataTarget = "#datetimepicker"+id_count;
+                console.log(id, dataTarget);    
+                document.getElementsByClassName("time1")[count].setAttribute("id",id);
+                document.getElementsByClassName("time2")[count].setAttribute("data-target",dataTarget);
+                $(dataTarget).datetimepicker({
+                format: 'HH:mm',
+              });
+              count += 1;
+              id_count += 1;
+              {% endfor %}
+    
+            });
+    
+            </script>
+    <!-- <input type="submit" value="Sign Up"> -->
+    <button class="btn btn-outline-success mt-3 pl-4 pr-4 float-right" type="submit">Submit</button>
+    <div class="clearfix"></div>
+    
+    </div>
 </form>
+
 {% endif %}
 {% endif %}
 </div>
