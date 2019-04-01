@@ -90,7 +90,7 @@ body{
 /* BREADCRUMBS  */
 
 .breadcrumbs {
-    width: 85%;
+    width: 100%;
     background: #79aec8;
     padding: 10px 20px;
     border: none;
@@ -118,7 +118,7 @@ body{
 }
 
 .wrapper{
-    width: 85%;
+    width: 100%;
     margin: auto;
     background-color: whitesmoke;
     padding:20px 20px 20px 20px;

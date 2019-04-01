@@ -39,7 +39,24 @@
                 console.log("success");
             }
         </script>
-    <div class="row milestone mt-1">
+    {% if milestone.check_status == "NS" %}
+    <div class="row milestone mt-1 bg-secondary">
+    {% elif milestone.check_status == "ON" %}
+    <div class = "row milestone mt-1 bg-warning">
+    {% else %}
+    <div class = "row milestone mt-1">
+    {% endif %}  
+
+    {% if milestone.check_status == "FN" %}
+    {% if milestone.id in completed_milestones %}
+    <div class = "row milestone mt-1 bg-success">
+    {% else %}
+    <div class = "row milestone mt-1 bg-danger">
+    {% endif %}
+    {% endif %}
+
+    <!-- <div class = "row milestone mt-1 bg-danger"> -->
+
         <div class="col text-left"><a href=""></a>{{ milestone.milestone_name }}
             <input type="hidden" id="myVar" name="variable" value="{{ milestone.id }}">
         </div>
@@ -178,7 +195,7 @@
     </form>    
 </div>
 {% else %}
-User is student
+Not Authorized to access this site. Please login as a supervisor <a href="">here</a>
 {% endif %}
 {% endif %}
 

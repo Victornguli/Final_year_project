@@ -55,8 +55,8 @@ class SupervisorSignUpForm(UserCreationForm):
         return user
 
 class CreateAppointmentForm(forms.Form):
-    date = forms.DateField()
-    time = forms.DateTimeField(widget = forms.DateTimeInput)
+    date = forms.DateField(input_formats=['%d/%m/%Y %H:%M'])
+    time = forms.TimeField(input_formats=['%H:%M'])
 
 class SelectAvailableDaysForm(forms.Form):
     monday = forms.TimeField(
@@ -130,7 +130,7 @@ class UploadFileForm(forms.Form):
     document = forms.FileField()
 
 class CreateProjectForm(forms.Form):
-    title = forms.CharField(max_length=50, required=True, help_text="Enter your Project Title")
+    title = forms.CharField(max_length=100, required=True, help_text="Enter your Project Title")
     abstract = forms.CharField(
         widget= forms.Textarea(
             attrs={

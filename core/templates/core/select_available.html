@@ -81,8 +81,7 @@
             </script>
     <!-- <input type="submit" value="Sign Up"> -->
     <button class="btn btn-outline-success mt-3 pl-4 pr-4 float-right" type="submit">Submit</button>
-    <div class="clearfix"></div>
-    
+    <div class="clearfix"></div> 
     </div>
 </form>
 
@@ -90,3 +89,11 @@
 {% endif %}
 </div>
 {% endblock %}
+
+{% for completed_milestone in completed_milestones %}
+{% if milestone.id == completed_milestone.milestone.id %}
+<div class = "row milestone mt-1 bg-success">
+{% else %}
+<div class = "row milestone mt-1 bg-danger">
+{% endif %}
+{% endfor %}

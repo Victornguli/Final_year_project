@@ -1,5 +1,6 @@
 import os
 import json, io
+from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import login
@@ -8,7 +9,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import FileResponse
 from django.utils.text import slugify
 from django.contrib import messages
-
 from collections import OrderedDict
 from fusioncharts import FusionCharts
 
@@ -62,15 +62,36 @@ def RequestAppointment(request):
     user = request.user
     supervisor = user.student.supervisor  
     available_days = AvailableDay.objects.filter(supervisor_id = supervisor.id)
+    if form.data:
+        date = form.data["date"].split(".")
+        time = form.data["time"].split(":")
+
+        if len(time) >= 2 :
+            hour = time[0]
+            minute = time[1]
+            requested_time = datetime.time(int(hour),int(minute),00,000000)
+            print (requested_time)
+
+        if len(date) >=2 :
+            year = date[0]
+            month = date[1]
+            day   = date[2]
+            requested_day = datetime.date(int(year),int(month),int(day))
+            print (requested_day)
+            
+        Appointment.objects.create(date=requested_day, time=requested_time,student_id=user.student.id, supervisor_id=supervisor.id)
+
     if form.is_valid():  
         date = form.cleaned_data.get("date")
         time = form.cleaned_data.get("time")
+        print(date,time)
         appointment = Appointment.objects.create(date=date, time=time, student_id= user.student.id, supervisor_id = supervisor.id)
-        return render(request, 'core/request_appointment.html',{"form":form, "available_days":available_days, "supervisor":supervisor})
+        return render(request, 'core/dashboard/student/request_appointment.html',{"form":form, "available_days":available_days, "supervisor":supervisor})
 
     
-    return render(request,'core/request_appointment.html',{"form":form, "available_days":available_days, "supervisor":supervisor})
+    return render(request,'core/dashboard/student/request_appointment.html',{"form":form, "available_days":available_days, "supervisor":supervisor})
         # return render(request, "core/request-appointment.html")
+
 
 def SelectAvailableDays(request):
     form = SelectAvailableDaysForm(request.POST)
@@ -91,7 +112,7 @@ def SelectAvailableDays(request):
         else:
             pass
 
-        return render(request, "core/select_available.html",{"form2":form})
+        return render(request, "core/dashboard/supervisor/update_timeslots.html",{"form2":form})
     return redirect(SelectAvailableDays)    
 
 def SaveAvailableDays(request):
@@ -158,24 +179,63 @@ def SaveAvailableDays(request):
         pass
     return redirect(SelectAvailableDays)
 
-def DeleteAvailableDays(request, availableday_id):
+def DeleteAvailableDays(request, day, availableday_id):
     available_day = AvailableDay.objects.get(pk=availableday_id)
     user = request.user
-    if user.is_supervisor():
-        AvailableDay.filter(pk=availableday_id).update()
+    if user.is_supervisor:
+        if day == "monday":
+            AvailableDay.objects.filter(pk=availableday_id).update(monday=None)
+        elif day == "tuesday":
+            AvailableDay.objects.filter(pk=availableday_id).update(tuesday=None)
+        elif day == "wednesday":
+            AvailableDay.objects.filter(pk=availableday_id).update(wednesday=None)
+        elif day == "thursday":
+            AvailableDay.objects.filter(pk=availableday_id).update(thursday=None)
+        elif day == "friday":
+            AvailableDay.objects.filter(pk=availableday_id).update(friday=None)
+        elif day == "saturday":
+            AvailableDay.objects.filter(pk=availableday_id).update(saturday=None)
+        else:
+            AvailableDay.objects.filter(pk=availableday_id).update(sunday=None)
+
+        return redirect(ViewAvailableDays)    
+    return redirect(ViewAvailableDays)
 
 def ViewAvailableDays(request):
+    user = request.user
     days = AvailableDay.objects.all()
     appointments = Appointment.objects.all()
     students = Student.objects.all()
-    return render(request, "core/request_appointment.html" , {"days":days, "appointments":appointments, "students":students })   
+    if user.is_student:
+        return render(request, "core/dashboard/student/view_available_slots.html" , {"days":days, "appointments":appointments, "students":students }) 
+    elif user.is_supervisor:
+        return render(request, "core/dashboard/supervisor/available_timeslots.html" , {"days":days, "appointments":appointments, "students":students })
 
 
 def ViewAppointments(request):
+    user = request.user
     days = AvailableDay.objects.all()
     appointments = Appointment.objects.all()
-    students = Student.objects.all() 
-    return render(request, "core/appointments.html" , {"days":days, "appointments":appointments, "students":students })     
+    students = Student.objects.all()     
+    approved_appointments = Appointment.objects.filter(approved="Approved")
+    if user.is_authenticated:
+        if user.is_student:
+            supervisor = Supervisor.objects.get(student=user.student.id)
+            return render(request, "core/dashboard/student/appointments.html" , {"days":days,       "appointments":appointments,"approved_appointments":approved_appointments, "students":students,     "supervisor":supervisor })  
+
+        elif user.is_supervisor:
+            return render(request, "core/dashboard/supervisor/pending_appointments.html" , {"days":days,       "appointments":appointments,"approved_appointments":approved_appointments, "students":students})              
+
+def view_approved_appointments(request):
+    user = request.user
+    days = AvailableDay.objects.all()
+    appointments = Appointment.objects.all()
+    students = Student.objects.all()     
+    approved_appointments = Appointment.objects.filter(approved="Approved")
+
+    if user.is_authenticated:
+        if user.is_supervisor:
+            return render(request, "core/dashboard/supervisor/approved_appointments.html" , {"days":days,       "appointments":appointments,"approved_appointments":approved_appointments, "students":students})                
 
 def ApproveAppointment(request, appointment_id):
     appointment = Appointment.objects.get(pk = appointment_id)
@@ -217,16 +277,21 @@ def ViewProfile(request):
         supervisor = user.supervisor
         form = UpdateProfileForm(initial={'first_name': supervisor.first_name, 'last_name': supervisor.last_name, 'user_name': user.username,'email': supervisor.email})
 
-    return render(request, "core/profile.html", {"form":form})
+    return render(request, "core/dashboard/profile.html", {"form":form})
 
 def project_view(request):
     user = request.user
     if user.is_student:
-        return redirect(StudentProject)
-    
+        student = user.student
+        if student.project:
+            return render (request,"core/dashboard/student/project_info.html", {"student":student} )
+        else:
+            form = CreateProjectForm(initial={"abstract_text":" "})
+            return render(request, "core/dashboard/student/project_info.html",{"form":form})
+
     elif user.is_supervisor:
         students = Student.objects.filter(supervisor_id = user.supervisor.id)
-        return render(request,"core/project/project.html", {"students":students})
+        return render(request,"core/dashboard/supervisor/supervision_list.html",{"students":students})
 
 def StudentProject(request):
     user = request.user
@@ -235,10 +300,15 @@ def StudentProject(request):
     if user.is_student:
         student = user.student
         if student.project:
-            schedule = user.student.project.schedule
-            milestones = Milestone.objects.filter(schedule_id=schedule.id)
             documents = Document.objects.all()
             comments = Comment.objects.filter(student_id = student.id)
+            schedule = user.student.project.schedule
+            milestones = Milestone.objects.filter(schedule_id=schedule.id)
+            completed_milestones = CompletedMilestones.objects.filter(project_id=student.project_id)
+
+            completed_milestones_list = []
+            for completed_milestone in completed_milestones:
+                completed_milestones_list.append(completed_milestone.milestone.id)
 
             comment_count = {}
             for milestone in milestones:
@@ -249,15 +319,17 @@ def StudentProject(request):
                 start_date = milestone.start_date
                 end_date = milestone.end_date
                 now = datetime.datetime.now().date()
-                days = end_date - now
-                remaining_days[milestone.id] = days.days
-            
-            
-        else:
-            form = CreateProjectForm(initial={"abstract_text":" "})
-            return render(request, "core/project/project_progress.html",{"form":form})
+                if now > end_date:
+                    days = 0
+                    remaining_days[milestone.id] = days
+                else:
+                    days = end_date - now
+                    remaining_days[milestone.id] = days.days
 
-        return render(request,"core/project/project_progress.html", {"milestones":milestones, "student":student,"remaining_days":remaining_days, "documents":documents, "form2":form2, "comments":comments, "comment_count":comment_count })
+        else:
+            return redirect(project_view)
+
+        return render(request,"core/dashboard/student/project.html", {"milestones":milestones,"completed_milestones":completed_milestones_list, "student":student,"remaining_days":remaining_days, "documents":documents, "form2":form2, "comments":comments, "comment_count":comment_count })
 
 def project_supervision_view(request, student_id):
     user = request.user
@@ -266,11 +338,16 @@ def project_supervision_view(request, student_id):
         student = Student.objects.get(pk=student_id)
         schedule = student.project.schedule
         milestones = Milestone.objects.filter(schedule_id=schedule.id)
+        completed_milestones = CompletedMilestones.objects.filter(project_id=student.project_id)
         documents = Document.objects.filter(student_id = student_id)
         comments = Comment.objects.filter(student_id = student.id)    
         comment_count = {}
         for milestone in milestones:
             comment_count[milestone.id] = Comment.objects.filter(student_id = student.id, milestone_id=milestone.id).count()
+        
+        completed_milestones_list = []
+        for completed_milestone in completed_milestones:
+            completed_milestones_list.append(completed_milestone.milestone.id)
 
         remaining_days = {}
         for milestone in milestones:
@@ -283,7 +360,7 @@ def project_supervision_view(request, student_id):
             else:
                 days = end_date - now
                 remaining_days[milestone.id] = days.days
-        return render(request, "core/project/project_supervision.html",  {"milestones":milestones, "student":student,"remaining_days":remaining_days, "documents":documents, "comments":comments, "form":form, "comment_count":comment_count})
+        return render(request, "core/dashboard/supervisor/project_supervision.html",  {"milestones":milestones, "completed_milestones":completed_milestones_list, "student":student,"remaining_days":remaining_days, "documents":documents, "comments":comments, "form":form, "comment_count":comment_count})
 
 
 def upload_file(request, milestone_id):
@@ -312,6 +389,16 @@ def download_document(request, document_id):
         "filename=%s.%s" %(slugify(item.document)[:100], file_extension)
     return response
 
+def download_abstract(request, abstract_id):
+    item = get_object_or_404(Abstract, pk=abstract_id)
+    file_name= os.path.join('/media/v3ctor/Projects/FinalYear/newProject/SPMS/media/abstract/', str(item.document))
+    file_extension = ".docx" # removes dot
+    response = FileResponse(item.document, 
+        content_type = "file/docx")
+    response["Content-Disposition"] = "attachment;"\
+        "filename=%s.%s" %(slugify(item.document)[:100], file_extension)
+    return response
+
 
 def createproject_view(request):
     if request.method == "POST":
@@ -327,11 +414,13 @@ def createproject_view(request):
             abstract_text = form.cleaned_data.get("abstract")
             document = form.cleaned_data.get("abstract_document")
             schedule = Schedule.objects.get(status=1)
-            #Create Abstract
-            abstract = Abstract.objects.create(title=title, abstract_text=abstract_text, document=document)
-            #Create New Project
-            project = Project.objects.create(title=title, schedule_id = schedule.id, abstract_id=abstract.id)
+            abstract = Abstract.objects.create(title=title, abstract_text=abstract_text, document=document) #Create new Abstract
+            project = Project.objects.create(title=title, schedule_id = schedule.id,abstract_id=abstract.id) #Create New Project
             Student.objects.filter(id = student.id).update(project_id=project.id)
+
+            print ("OK")
+        return redirect(StudentProject)
+        
         
         return redirect(StudentProject)
         
@@ -376,26 +465,11 @@ def UpdateProfile(request):
 
 
 def ViewPastProjects(request):
-    if request.method == "POST":
-        form = TestForm(request.POST)
-        user = request.user
-        if form.is_valid():
-            for phone in form.cleaned_data.get("phone_numbers").splitlines():
-                message = form.cleaned_data.get("message")
-                access_code = user.profile.access_code
-                service_id = user.profile.access_id
-                #YourModel.Objects.create(phone_number = phone, message=message)
-                #Save Your phone number and message here => each loop saves one phone number and the message 
     pastprojects = PastProject.objects.all()
     students = Student.objects.all()
-    return render(request,"core/index.html", {"pastprojects":pastprojects,"students":students})
+    user = request.user
 
-
-def CloseProject(request, project_id, student_id):
-    PastProject.objects.add(project_id = project_id)
-    Project.objects.filter(pk=project_id).update(status=0)
-    Student.objects.filter(pk=student_id).update(status=0)
-    return response
+    return render(request,"core/past_projects.html", {"pastprojects":pastprojects,"students":students})
 
 
 def CloseMilestone(request, milestone_id, project_id):
@@ -421,8 +495,9 @@ def CloseProject(request, project_id):
             if student.project_id == project_id:
                 student = student
     
+    project = Project.objects.get(pk=project_id)
     milestones = Milestone.objects.all()
-    completed_milestones = CompletedMilestones.objects.all()
+    completed_milestones = CompletedMilestones.objects.filter(project_id=project_id)
     project_status = False
     for milestone in milestones:
         for completed_milestone in completed_milestones:
@@ -430,9 +505,13 @@ def CloseProject(request, project_id):
                 project_status = True
             else:
                 project_status = False
-    if project_status == True:
-        PastProject.objects.create(project_id=project_id)
-        Project.objects.filter(pk=project_id).update(status=False)
+                
+    if project.status == True:
+        if project_status == True:
+            PastProject.objects.create(project_id=project_id)
+            Project.objects.filter(pk=project_id).update(status=False)
+        else:
+            pass
     else:
         pass
 
@@ -444,11 +523,15 @@ def chart_view(request):
     groups = Group.objects.all()
     group1 = Group.objects.get(pk=1)
     group2 = Group.objects.get(pk=2)
+    
+    current_schedule = Schedule.objects.get(status=1)
+    caption = "Final Year Project "+current_schedule.schedule_name
+          
     gantt_info = {
         "chart":{
             "dateformat": "mm/dd/yyyy",
-            "caption": "Final Year Project",
-            "theme": "ocean",
+            "caption": caption ,
+            "theme": "fusion",
             "canvasborderalpha": "40",
             "ganttlinealpha": "50"
         },
@@ -461,12 +544,12 @@ def chart_view(request):
         }, 
         "processes" : {
           "headertext": "Task",
-          "headeralign": "left",
-          "fontsize": "14",
+          "headeralign": "center",
+          "fontsize": "16",
           "isbold": "0",
           "align": "left",
           "process": [
-          ] 
+          ],                    
         }, 
         "categories":[
             {
@@ -527,10 +610,10 @@ def chart_view(request):
         week += 1
     
     for group in groups:
-        if group.group == "S1":
-              label = "Semester One"
+        if group.semester == "S1":
+              label = "Semester One (4.1)"
         else:
-              label = "Semester Two"
+              label = "Semester Two (4.2)"
 
         gantt_info["categories"][0]["category"].append(
           {"start":group.start_date.__str__(), "end":group.end_date.__str__(), "label":label}
@@ -550,7 +633,7 @@ def chart_view(request):
 
     chart = gantt_info  
     gantt_info_json = json.dumps(gantt_info)
-    print (gantt_info_json)
+    # print (gantt_info_json)
 
     chartObj = FusionCharts(
         'gantt',
@@ -562,4 +645,14 @@ def chart_view(request):
         json.dumps(chart) 
         )
 
-    return render(request, 'fusion/fusion.html', {'output': chartObj.render()})
+    #return render(request, 'fusion/fusion.html', {'output': chartObj.render()})
+    return render(request, "core/dashboard/student/project_schedule.html", {'output': chartObj.render()})
+
+def view_notifications(request):
+    pastprojects = PastProject.objects.all()
+    students = Student.objects.all()
+    user = request.user
+    if user.is_authenticated:
+        notifications = Notification.objects.all()
+
+    return render(request,"core/dashboard/notifications.html", {"pastprojects":pastprojects,"students":students,"notifications":notifications})

@@ -14,8 +14,8 @@ class StudentAdmin(admin.ModelAdmin):
     list_filter = ["course", "project","status"]
 
 class MilestoneAdmin(admin.ModelAdmin):
-    list_display = ["milestone_name", "start_date", "end_date", "schedule", "required_document", "group"]
-    list_filter = ["group", "schedule", "start_date", "end_date"]
+    list_display = ["milestone_name", "start_date", "end_date", "schedule", "required_document", "semester"]
+    list_filter = ["semester", "schedule", "start_date", "end_date"]
 
 class PastProjectAdmin(admin.ModelAdmin):
     list_display = ["project"]
@@ -45,9 +45,12 @@ class DocumentAdmin(admin.ModelAdmin):
     list_filter = ["student","milestone"]
 
 class GroupAdmin(admin.ModelAdmin):
-    list_display = [ "group", "start_date", "end_date"]
-    list_filter = ["group"]
+    list_display = ["semester", "start_date", "end_date"]
+    list_filter = ["semester"]
 
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ["title", "text", "receiver","sent_time", "sent_date", "document"]
+    list_filter = ["receiver", "sent_date"]
 
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(PastProject, PastProjectAdmin)
@@ -60,3 +63,4 @@ admin.site.register(AvailableDay, AvailableDayAdmin)
 admin.site.register(Appointment, AppointmentAdmin)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Group, GroupAdmin)
+admin.site.register(Notification, NotificationAdmin)

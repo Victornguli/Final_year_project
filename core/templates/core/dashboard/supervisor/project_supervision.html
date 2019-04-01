@@ -1,0 +1,506 @@
+{% extends "core/dashboard/dashboard_base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div id="page-wrapper">
+
+    <script>
+        $(function (){
+                var count = 0;
+
+                {% for milestone in milestones %}
+                {% if milestone.semester_id == 1 %}
+                    document_id = "document"+{{ milestone.id }};
+                    comment_id = "comment"+{{ milestone.id }};
+
+                    document.getElementsByClassName("DownloadModal")[count].setAttribute("id", document_id);
+                    document.getElementsByClassName("modal-link")[count].setAttribute("data-target", "#"+document_id);
+                    
+                    document.getElementsByClassName("comment-link")[count].setAttribute("data-target", "#"+comment_id);
+                    document.getElementsByClassName("CommentModal")[count].setAttribute("id", comment_id);
+
+                    console.log(document_id, comment_id);
+                    count ++;
+
+                {% endif %}
+                {% endfor %}
+
+            });
+        </script>
+
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="page-header">Project</h2>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <div class="row" style="margin-bottom:100px; padding-bottom: 10px">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b>Project Title: {{ student.project.title }}</b>
+                </div>
+                <!-- Panel Heading -->
+
+                <div class="panel-body">
+                    {% if student.project %}
+
+                    <div class="panel">
+                        <div class="panel-heading"></div>
+                        <div class="panel-body">
+                                <table class="table table-hover table-striped bg-info table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td>Name of student :</td>
+                                                <td>{{ student.first_name }} {{ student.last_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Name of supervisor :</td>
+                                                <td>{{ student.supervisor.first_name }} {{student.supervisor.last_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Project title :</td>
+                                                <td>{{ student.project.title }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Start date :</td>
+                                                <td>{{ student.project.start_date }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Year :</td>
+                                                <td> {{ student.project.schedule }} </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        Project Abstract
+                                    </div>
+                                    <div class="panel-body">
+                                        <p>{{ student.project.abstract.abstract_text }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer"></div>
+                    </div>
+
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <b>Semester One (4.1) Activities</b>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-borderless table-hover table-striped bg-success">
+                                    <thead>
+                                        <tr>
+                                            <th>Milestone</th>
+                                            <th>Schedule</th>
+                                            <th>Status</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Documents</th>
+                                            <th>Comments</th>
+                                            <th>Close</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for milestone in milestones %}
+
+
+                                        {% if milestone.semester_id == 1 %}
+                                        <tr style="padding-bottom:10px">
+                                            <td>{{ milestone.milestone_name }}</td>
+                                            <td>
+                                                {% if milestone.status == "NS" %}Not Started
+                                                {% elif milestone.status == "ON" %}Ongoing
+                                                {% else %} Finished
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if milestone.check_status == "NS" %}
+                                                <div class="gray-notstarted">
+                                                    <div class="inner-circle" data-toggle="tooltip" data-placement="top" title="ThisMilestone has not started yet" data-original-title="Tooltip on top">
+                                                    </div>                                                  
+                                                </div>
+                                                {% elif milestone.check_status == "ON" %}
+                                                <div class="yellow-ongoing">
+                                                    <div class="inner-circle" data-toggle="tooltip" data-placement="top" title="ThisMilestone is currently on progress" data-original-title="Tooltip on top"></div>
+                                                </div>
+                                                {% endif %}  
+                                        
+                                                {% if milestone.check_status == "FN" %}
+                                                {% if milestone.id in completed_milestones %}
+                                                <div class="green-success">
+                                                    <div class="inner-circle" data-toggle="tooltip" data-placement="top" title="ThisMilestone was completed successfully" data-original-title="Tooltip on top"></div>
+                                                </div>
+                                                {% else %}
+                                                <div class="red-unsuccessful">
+                                                    <div class="inner-circle" data-toggle="tooltip" data-placement="top" title="Thismilestone was completed late" data-original-title="Tooltip on top"></div>
+                                                </div>
+                                                {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {{ milestone.start_date }}
+                                            </td>
+                                            <td>
+                                                {{ milestone.end_date }}
+                                            </td>
+                                            <td>
+                                                <a href="" data-toggle="modal" class="modal-link" data-target="#modal-id"
+                                                    style="margin-left:30px"><i class="fa fa-download"></i></a>
+                            </div>
+                            </td>
+
+                            <td><a class="comment-link" data-toggle="modal" data-target="#comment-id" style="margin-left:20px"><i
+                                        class="fa fa-comments-o"></i></a>
+                                        {% for key,values in comment_count.items %}
+                                        {% if key == milestone.id %}
+                                        <sup><b>{{ values }}</b></sup> 
+                                        {% endif %}
+                                        {% endfor %}  
+                            </td>
+
+                            <div class="modal DownloadModal" id="modal-id">
+                                <div class="modal-dialog modal-md">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title" id="myModalLabel">Download Document for {{ milestone }}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-lg-6"><b>Document Title</b></div>
+                                                    <div class="col-lg-6"><b>Download Link</b></div>
+                                                </div>
+                                                <div class="row"> 
+                                                    {% for document in documents %}
+                                                    {% if document.student_id == student.id and document.milestone_id == milestone.id %}
+                                                    <ul class="list-group list-unstyled">
+                                                        <li>                             
+                                                            <div class="col-lg-6" style="padding-top:15px; border-top:1px solid gray">{{ document.title }}</div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="col-lg-6" style="padding-top:15px; border-top:1px solid gray"><a href="{% url "download" document.id %}">Download</a></div>
+                                                        </li>
+                                                    </ul>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+
+                            </div>
+
+                            <div class="modal CommentModal" id="comment-id">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title" id="myModalLabel">View/Add Comments for {{ milestone }}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="POST" action="{% url "view_comments" milestone.id student.id %}">
+                                                {% csrf_token %}
+                                                <div class="w-100" style="margin-bottom:50px;">
+                                                    {{ form|crispy }}
+                                                    <button class="btn btn-outline btn-success pl-5 pr-5 float-right mb-5"
+                                                        type="submit">Add Comment</button>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </form>
+                                            <div class="w-100 mb-5">
+                                                {% for comment in comments %}
+                                                {% if comment.milestone_id == milestone.id %}
+                                                {% if comment.sender == 0 %}
+                                                <div id="supervisor" class="mb-2">
+                                                <ul class="chat">
+                                                    <li class="right clearfix">
+                                                            <span class="chat-img pull-right">
+                                                                    <img src="http://placehold.it/50/FA6F57/fff" alt="User Avatar" class="img-circle">
+                                                                </span>
+                                                                <div class="chat-body clearfix">
+                                                                        <div class="header">
+                                                                            <small class=" text-muted">
+                                                                                <i class="fa fa-clock-o fa-fw"></i> {{ comment.sent_date }}
+                                                                            </small>
+                                                                            <strong class="pull-right primary-font">{{ comment.supervisor.first_name }} {{ comment.supervisor.last_name }}</strong>
+                                                                        </div>
+                                                                        <p>
+                                                                            {{ comment.text }}
+                                                                        </p>
+                                                                </div> 
+                                                    </li>                                                    
+                                                </ul>                                                   
+                                                </div>
+                                                {% else %}
+                                                <div id="student" class="mb-1">
+                                                        <ul class="chat">
+                                                                <li class="left clearfix">
+                                                                        <span class="chat-img pull-left">
+                                                                                <img src="http://placehold.it/50/55C1E7/fff" alt="User Avatar" class="img-circle">
+                                                                            </span>
+                                                                    <div class="chat-body clearfix">
+                                                                        <div class="header">
+                                                                            <strong class="primary-font">{{ student.first_name }} {{ student.last_name }}</strong>
+                                                                            <small class="pull-right text-muted">
+                                                                                <i class="fa fa-clock-o fa-fw"></i> {{ comment.sent_date }}
+                                                                            </small>
+                                                                        </div>
+                                                                        <p> {{ comment.text }} </p>
+                                                                    </div>
+                                                                </li>
+                                                        </ul>                                                   
+                                                </div>                                                
+                                                {% endif %}
+                                                {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger btn-default" data-dismiss="modal">Exit</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+
+                            </div>
+
+                            <td>
+                                {% if milestone.id in completed_milestones %}
+                                <button class="btn btn-success btn-sm">Closed</button> 
+                                {% else %}
+                                <a href="{% url "close_milestone" milestone.id student.project.id %}"><button class="btn btn-danger btn-sm " style="padding-left:12px; padding-right:13px">Close</button></a>
+                                {% endif %}
+                            </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-green">
+                    <div class="panel-heading">
+                        <b>Semester Two (4.2) Activities</b>
+                    </div>
+                    <div class="panel-body" >
+                        <div class="table-responsive">
+                            <table class="table table-borderless table-hover table-striped bg-success">
+                                <thead>
+                                    <tr>
+                                        <th>Milestone</th>
+                                        <th>Schedule</th>
+                                        <th>Status</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Documents</th>
+                                        <th>Comments</th>
+                                        <th>Close</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for milestone in milestones %}
+                                    {% if milestone.semester_id == 2 %}
+                                    <tr style="padding-bottom:10px">
+                                        <td>{{ milestone.milestone_name }}</td>
+                                        <td>
+                                            {% if milestone.status == "NS" %}Not Started
+                                            {% elif milestone.status == "ON" %}Ongoing
+                                            {% else %} Finished
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if milestone.check_status == "NS" %}
+                                            <div class="gray-notstarted">
+                                                <div class="inner-circle" data-toggle="tooltip" data-placement="top" title="ThisMilestone has not started yet" data-original-title="Tooltip on top">
+                                                </div>                                                  
+                                            </div>
+                                            {% elif milestone.check_status == "ON" %}
+                                            <div class="yellow-ongoing">
+                                                <div class="inner-circle" data-toggle="tooltip" data-placement="top" title="ThisMilestone is currently on progress" data-original-title="Tooltip on top"></div>
+                                            </div>
+                                            {% endif %}  
+                                    
+                                            {% if milestone.check_status == "FN" %}
+                                            {% if milestone.id in completed_milestones %}
+                                            <div class="green-success">
+                                                <div class="inner-circle" data-toggle="tooltip" data-placement="top" title="ThisMilestone was completed successfully" data-original-title="Tooltip on top"></div>
+                                            </div>
+                                            {% else %}
+                                            <div class="red-unsuccessful">
+                                                <div class="inner-circle" data-toggle="tooltip" data-placement="top" title="Thismilestone was completed late" data-original-title="Tooltip on top"></div>
+                                            </div>
+                                            {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ milestone.start_date }}
+                                        </td>
+                                        <td>
+                                            {{ milestone.end_date }}
+                                        </td>
+                                        <td>
+                                            <a href="" data-toggle="modal" class="modal-link" data-target="#modal-id" style="margin-left:30px"><i class="fa fa-download"></i></a>
+                                        </td>
+                                        <td><a href="" class="comment-link" data-toggle="modal" data-target="#comment-id" style="margin-left:20px"><i class="fa fa-comments-o"></i></a>
+                                            {% for key,values in comment_count.items %}
+                                            {% if key == milestone.id %}
+                                            <sup><b class="text-success">{{ values }}</b></sup> 
+                                            {% endif %}
+                                            {% endfor %}  
+                                        </td>
+
+                                        <div class="modal DownloadModal" id="modal-id">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                            <h4 class="modal-title" id="myModalLabel">Download Document for {{ milestone }}</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-lg-6"><b>Document Title</b></div>
+                                                                    <div class="col-lg-6"><b>Download Link</b></div>
+                                                                </div>
+                                                                <div class="row"> 
+                                                                    {% for document in documents %}
+                                                                    {% if document.student_id == student.id and document.milestone_id == milestone.id %}
+                                                                    <ul class="list-group list-unstyled">
+                                                                        <li>                             
+                                                                            <div class="col-lg-6" style="padding-top:15px; border-top:1px solid gray">{{ document.title }}</div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <div class="col-lg-6" style="padding-top:15px; border-top:1px solid gray">
+                                                                                <a href="{% url "download" document.id %}">Download</a>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger btn-default" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                
+                                            </div>
+                
+                                            <div class="modal CommentModal" id="comment-id">
+                                                    <div class="modal-dialog modal-lg">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                    <h4 class="modal-title" id="myModalLabel">View/Add Comments for {{ milestone }}</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form method="POST" action="{% url "view_comments" milestone.id student.id %}">
+                                                                        {% csrf_token %}
+                                                                        <div class="w-100" style="margin-bottom:50px;">
+                                                                            {{ form|crispy }}
+                                                                            <button class="btn btn-outline btn-success pl-5 pr-5 float-right mb-5"
+                                                                                type="submit">Add Comment</button>
+                                                                            <div class="clearfix"></div>
+                                                                        </div>
+                                                                    </form>
+                                                                    <div class="w-100 mb-5">
+                                                                        {% for comment in comments %}
+                                                                        {% if comment.milestone_id == milestone.id %}
+                                                                        {% if comment.sender == 0 %}
+                                                                        <div id="supervisor" class="mb-2">
+                                                                        <ul class="chat">
+                                                                            <li class="right clearfix">
+                                                                                    <span class="chat-img pull-right">
+                                                                                            <img src="http://placehold.it/50/FA6F57/fff" alt="User Avatar" class="img-circle">
+                                                                                        </span>
+                                                                                        <div class="chat-body clearfix">
+                                                                                                <div class="header">
+                                                                                                    <small class=" text-muted">
+                                                                                                        <i class="fa fa-clock-o fa-fw"></i> {{ comment.sent_date }}
+                                                                                                    </small>
+                                                                                                    <strong class="pull-right primary-font">{{ comment.supervisor.first_name }} {{ comment.supervisor.last_name }}</strong>
+                                                                                                </div>
+                                                                                                <p>
+                                                                                                    {{ comment.text }}
+                                                                                                </p>
+                                                                                        </div> 
+                                                                            </li>                                                    
+                                                                        </ul>                                                   
+                                                                        </div>
+                                                                        {% else %}
+                                                                        <div id="student" class="mb-1">
+                                                                                <ul class="chat">
+                                                                                        <li class="left clearfix">
+                                                                                                <span class="chat-img pull-left">
+                                                                                                        <img src="http://placehold.it/50/55C1E7/fff" alt="User Avatar" class="img-circle">
+                                                                                                    </span>
+                                                                                            <div class="chat-body clearfix">
+                                                                                                <div class="header">
+                                                                                                    <strong class="primary-font">{{ student.first_name }} {{ student.last_name }}</strong>
+                                                                                                    <small class="pull-right text-muted">
+                                                                                                        <i class="fa fa-clock-o fa-fw"></i> {{ comment.sent_date }}
+                                                                                                    </small>
+                                                                                                </div>
+                                                                                                <p> {{ comment.text }} </p>
+                                                                                            </div>
+                                                                                        </li>
+                                                                                </ul>                                                   
+                                                                        </div>                                                
+                                                                        {% endif %}
+                                                                        {% endif %}
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-danger btn-default" data-dismiss="modal">Exit</button>
+                                                                </div>
+                                                                </form>
+                                                            </div>
+                                                            <!-- /.modal-content -->
+                                                        </div>
+                
+                                            </div>
+                                        <td>
+                                            {% if milestone.id in completed_milestones %}
+                                            <button class="btn btn-success btn-sm">Closed</button> 
+                                            {% else %}
+                                            <a href="{% url "close_milestone" milestone.id student.project.id %}"><button class="btn btn-danger btn-sm" style="padding-left:12px; padding-right:13px">Close</button></a>
+                                            {% endif %}                                           
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <a href="{% url "close_project" student.project.id %}"><button class="btn btn-danger btn-md">Close Project</button></a> 
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+</div>
+
+{% endblock %}

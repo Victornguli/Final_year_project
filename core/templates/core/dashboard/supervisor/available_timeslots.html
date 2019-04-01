@@ -1,0 +1,90 @@
+{% extends "core/dashboard/dashboard_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="page-header">Appointments</h2>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <b>Available Time Slots</b>
+                </div>
+                <!-- Panel Heading -->
+
+                <div class="panel-body">
+                    <table class="table table-striped table-hover bg-success table-bordered">
+                        <thead>
+                            <th>Day</th>
+                            <th>Time slot</th>
+                            <th style="width:20%">Delete Timeslot</th>
+                        </thead>
+                        {% for day in days %}
+                        <tr>
+                            <td>Monday </td>
+                            <td>{{ day.monday }}</td>
+                            <td>
+                                <div><a href="{% url "delete_timeslot" day.id "monday" %}"><button class="btn btn-danger btn-outline btn-sm"><i class="fa fa-remove"></i> Delete</button></a></div>
+                            </td>                            
+                        </tr>    
+                        <tr>
+                            <td>Tuesday</td>
+                            <td>{{ day.tuesday }}</td>
+                            <td>
+                                <div><a href="{% url "delete_timeslot" day.id "tuesday" %}"><button class="btn btn-danger btn-outline btn-sm"><i class="fa fa-remove"></i> Delete</button></a></div>
+                            </td>                             
+                        </tr>        
+                        <tr>
+                            <td>Wednesday</td>
+                            <td>{{ day.wednesday }}</td>
+                            <td>
+                                    <div><a href="{% url "delete_timeslot" day.id "wednesday" %}"><button class="btn btn-danger btn-outline btn-sm"><i class="fa fa-remove"></i> Delete</button></a></div>
+                                </td>                             
+                        </tr>      
+                        <tr>
+                            <td>Thursday</td>
+                            <td>{{ day.thursday }}</td>
+                            <td>
+                                    <div><a href="{% url "delete_timeslot" day.id "thursday" %}"><button class="btn btn-danger btn-outline btn-sm"><i class="fa fa-remove"></i> Delete</button></a></div>
+                                </td> 
+                        </tr>       
+                        <tr>
+                            <td>Friday</td>
+                            <td>{{ day.friday }}</td>
+                            <td>
+                                    <div><a href="{% url "delete_timeslot" day.id "friday" %}"><button class="btn btn-danger btn-outline btn-sm"><i class="fa fa-remove"></i> Delete</button></a></div>
+                                </td> 
+                        </tr>    
+                        <tr>
+                            <td>Saturday</td>
+                            <td>{{ day.saturday }}</td>
+                            <td>
+                                    <div><a href="{% url "delete_timeslot" day.id "saturday" %}"><button class="btn btn-danger btn-outline btn-sm"><i class="fa fa-remove"></i> Delete</button></a></div>
+                                </td> 
+                        </tr>            
+                        <tr>
+                            <td>Sunday</td>
+                            <td>{{ day.sunday }}</td>
+                            <td>
+                                    <div><a href="{% url "delete_timeslot" day.id "sunday" %}"><button class="btn btn-danger btn-outline btn-sm"><i class="fa fa-remove"></i> Delete</button></a></div>
+                                </td> 
+                        </tr>                        
+                        {% endfor %}
+                
+                    </table>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+</div>
+
+{% endblock %}

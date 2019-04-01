@@ -3,21 +3,9 @@
 {% block content %}
 
 {% if "/accounts/signup/student/" == request.path %}
-<div class="breadcrumbs">
-  <a href="{% url "home" %}">SPMS</a>
-  &rsaquo;
-  <a href="{% url  "select_signup" %}">Registration</a>
-  &rsaquo;  
-  Student Registration
-</div>
+<h2>Student Registration</h2>
 {% else %}
-<div class="breadcrumbs">
-  <a href="{% url "home" %}">SPMS</a>
-  &rsaquo;
-  <a href="{% url  "select_signup" %}">Registration</a>
-  &rsaquo;
-  Supervisor Registration
-</div>
+<h2>Supervisor Registration</h2>
 {% endif %}
 
 <div class="wrapper">

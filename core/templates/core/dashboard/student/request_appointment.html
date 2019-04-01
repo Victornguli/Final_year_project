@@ -1,0 +1,63 @@
+{% extends "core/dashboard/dashboard_base.html" %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Request Appointment</h1>
+        </div>        
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Request Appointment
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+
+                            <form action="{% url "request_appointment" %} " method="POST">
+                                {% csrf_token %}
+                                <div style="width:50%">
+                                    <!-- <span><i id="clock" class="fa fa-clock-o"></i></span> -->
+                                    {{ form|crispy }}
+                                </div>
+                                <button class="btn btn-success btn-md p-5">Request</button>
+                            </form>
+                            </div>
+
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+$(function () {
+  $("#id_date").datetimepicker({
+      format:"Y.m.d",
+  });
+  $("#id_time").datetimepicker({
+      format:"H:i",
+  });
+  $('#clock').click(function(){
+      $('#id_date').datetimepicker('show');
+  });
+});
+</script>
+
+
+{% endblock %}

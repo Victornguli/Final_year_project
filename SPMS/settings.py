@@ -25,6 +25,8 @@ SECRET_KEY = '664u*bz58^7j543@(95v$434@-efbe0d)katoefh3_=k)&4oav'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+SOFT_DELETE=True
+
 ALLOWED_HOSTS = []
 
 
@@ -40,7 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "crispy_forms",
-    'webline_notifications',
+    #'webline_notifications',
+    #"notify",
+    #"notifications",
 ]
 
 MIDDLEWARE = [
@@ -136,6 +140,7 @@ STATICFILES_DIRS = [
 AUTH_USER_MODEL = "core.User"
 
 LOGIN_REDIRECT_URL = "/"
+
 
 LOGOUT_REDIRECT_URL = "/"
 

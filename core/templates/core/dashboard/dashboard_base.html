@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        {% block title %}
+        <title>Past Projects</title>
+        {% endblock %}
+        <!-- Bootstrap Core CSS -->
+        <link href="{% static "core/dashboard/css/bootstrap.min.css" %}" rel="stylesheet">
+
+        <!-- MetisMenu CSS -->
+        <link href="{% static "core/dashboard/css/metisMenu.css" %}" rel="stylesheet">
+
+        <!-- Timeline CSS -->
+        <link href="{% static "core/dashboard/css/timeline.css" %}" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="{% static "core/dashboard/css/startmin.css" %}" rel="stylesheet">
+        <!-- Morris Charts CSS -->
+        <link href="{% static "core/dashboard/css/morris.css" %}"  rel="stylesheet">
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+        <!-- XDSoft DateTimePicker -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+
+        <script type="text/javascript" src="{% static "core/fusion/fusioncharts.js" %}"></script>
+        <script type="text/javascript" src="{% static "core/fusion/themes/fusioncharts.theme.fusion.js" %}"></script>        
+
+        {% block css %}
+        {% endblock %}
+
+        <!-- Custom Fonts -->
+        <link href="{% static "core/dashboard/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
+        
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+
+        <div id="wrapper">
+        
+            <!-- Navigation -->
+            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#"> <i class="fa fa-home fa-fw"></i>Student Project Management System</a>
+                </div>
+        
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <!-- Top Navigation: Left Menu -->
+                <!-- <ul class="nav navbar-nav navbar-left navbar-top-links">
+                    <li><a href="#"><i class="fa fa-home fa-fw"></i> Website</a></li>
+                </ul> -->
+                <!-- Top Navigation: Right Menu -->
+
+                <ul class="nav navbar-right navbar-top-links">
+                    <li class="nav-item">
+                        <a href="{% url "home" %}">Past Projects</a>
+                    </li>                 
+                    <li class="navbar-inverse">
+                        <a class="" data-toggle="" href="{% url "view_notifications" %}">
+                            <i class="fa fa-bell-o fa-fw "></i>Notifications
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li>
+                                {% for notification in notifications %}
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-comment fa-fw"></i> {{ notification.title }}
+                                        <span class="pull-right text-muted small">{{ notification.sent_date }} at {{ notification.sent_time }}</span>
+                                    </div>
+                                </a>
+                                {% endfor %}
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a class="text-center" href="#">
+                                    <strong>See All Alerts</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw"></i>{{ user.username }}<b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            {% if user.is_student %}
+                            <li><a href="{% url "student_view_profile" %}"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            </li>
+                            {% else %}
+                            <li><a href="{% url "supervisor_view_profile" %}"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            </li>
+                            {% endif %}
+                            <li class="divider"></li>
+                            <li><a href="{% url "logout" %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                            <a href="{% url "select_signup" %}">Register</a>
+                    </li> 
+                    <li class="nav-item">
+                        <a href="{% url "login" %}">Login</a>
+                    </li> 
+                    <li class="nav-item">
+                        <a href="http://127.0.0.1:8000/admin/">Adminstration</a>                       
+                    </li> 
+                    {% endif %}
+                </ul>
+        
+                <!-- Sidebar -->
+                <div class="navbar-default sidebar" role="navigation">
+                    {% if user.is_supervisor %}
+                    <div class="sidebar-nav navbar-collapse">
+                        <ul class="nav" id="side-menu">
+                            <li>
+                                <a href="{% url "project" %}" class=""><i class="fa fa-dashboard fa-fw"></i> Supervisor Dashboard</a>
+                            </li>
+                            <li>
+                                <a href=""><i class="fa fa-sitemap fa-fw"></i> Project<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    <li>
+                                    <a href="{% url "project" %}">Supervision List</a>
+                                    </li>
+
+                                    <li>
+                                    <a href="{% url "project_schedule" %}">Project Schedule</a>
+                                    </li>                                   
+                                </ul>
+                            </li>
+                            <li>
+                                <a href=""><i class="fa fa-sitemap fa-fw"></i> Appointments<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    <li>
+                                        <a href="{% url "view_available" %}">View Available Timeslots</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url "select_days" %}">Update Timeslots</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url "appointments" %}">Pending Appointments</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url "approved_appointments" %}">Approved Appointments</a>
+                                    </li>
+                                </ul>
+                            </li>  
+                            <li>
+                                <a href="{% url "supervisor_view_profile" %}"><i class="fa fa-user fa-fw"></i>Profile</a>
+                            </li>                          
+                        </ul>
+        
+                    </div>
+
+                    {% elif user.is_student %}
+                    <div class="sidebar-nav navbar-collapse">
+                        <ul class="nav" id="side-menu">
+                            <li class="sidebar-search">
+                                <div class="input-group custom-search-form">
+                                    <input type="text" class="form-control" placeholder="Search...">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </span>
+                                </div>
+                            </li>
+                            <li>
+                                <a href="#" class=""><i class="fa fa-dashboard fa-fw"></i> Student Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-sitemap fa-fw"></i> Project<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    <li>
+                                        <a href="{% url "project" %}">Project Information</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url "student_project" %}">Project Progress</a>
+                                    </li>                                    
+                                    <li>
+                                        <a href="{% url "project_schedule" %}">Project Schedule</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-sitemap fa-fw"></i> Appointments<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    <li>
+                                        <a href="{% url "view_available" %}">View available time slots</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url "appointments" %}">Pending Appointments</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url "request_appointment" %}">Request Appointment </a>
+                                    </li>
+                                </ul>
+                            </li>  
+                            <li>
+                                <a href="{% url "student_view_profile" %}"><i class="fa fa-user fa-fw"></i> Profile</a>
+                            </li>                           
+                        </ul>
+        
+                    </div>
+                    {% else %}
+
+                    {% endif %}
+                </div>
+            </nav>
+        
+            <!-- Page Content -->
+            {% block content %}
+            {% endblock %}
+        </div>
+        <!-- /#wrapper -->
+
+            
+        
+        <!-- Bootstrap Core JavaScript -->
+        <script src="{% static "core/dashboard/js/bootstrap.min.js" %}"></script>
+
+        <!-- Metis Menu Plugin JavaScript -->
+        <script src="{% static "core/dashboard/js/metisMenu.min.js" %}"></script>
+        <!-- Custom Theme JavaScript -->
+        <script src="{% static "core/dashboard/js/startmin.js" %}""></script>
+
+        <!-- Fusion Charts JS -->
+        {% block js %}
+        {% endblock %}
+    </body>
+</html>

@@ -13,7 +13,7 @@ class Schedule(models.Model):
         return self.schedule_name
 
 class Abstract(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=100)
     abstract_text = models.CharField(max_length=1000)
     document = models.FileField(upload_to="abstract/")
     upladed_at = models.DateTimeField(auto_now_add=True)
@@ -22,7 +22,7 @@ class Abstract(models.Model):
         return self.title
 
 class Project(models.Model):
-    title = models.CharField(max_length=50,default="title")
+    title = models.CharField(max_length=100,default="title")
     status = models.BooleanField(default = True)
     start_date = models.DateField(auto_now=False, auto_now_add=True)
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
@@ -112,10 +112,10 @@ class Group(models.Model):
         (first_semester, "Semester One"),
         (second_semester, "Semester Two"),
     )
-    group = models.CharField(choices=milestone_group, default="S1", max_length=2)
+    semester = models.CharField(choices=milestone_group, default="S1", max_length=2)
 
     def __str__(self):
-        return self.group
+        return self.semester
 
 
 class Milestone(models.Model):
@@ -131,7 +131,7 @@ class Milestone(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    semester = models.ForeignKey(Group, on_delete=models.CASCADE, default=1)
     required_document = models.CharField(max_length=100, null=True)
 
     #status = models.CharField(max_length=2, choices=milestone_status, default="NS")
@@ -139,7 +139,7 @@ class Milestone(models.Model):
     @property
     def check_status(self):
         now = datetime.datetime.now().date()
-        if self.start_date > now:
+        if self.end_date < now and now > self.start_date:
             self.status = "FN"
             return "FN"
         elif self.start_date < now and now < self.end_date:
@@ -147,6 +147,7 @@ class Milestone(models.Model):
             return "ON"
         else:
             self.status = "NS"
+            return "NS"
 
     def __str__(self):
         return self.milestone_name  
@@ -164,6 +165,9 @@ class Document(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     milestone = models.ForeignKey(Milestone, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.title
+
 
 class Comment(models.Model):
     text = models.CharField(max_length=200)
@@ -173,3 +177,19 @@ class Comment(models.Model):
     sent_date = models.DateField(auto_now_add=False, auto_now=True)
     milestone = models.ForeignKey(Milestone, null=False, on_delete=models.CASCADE)
 
+
+class Notification(models.Model):
+    receiver_options = (
+        ("students","students"),
+        ("supervisors","supervisors"),
+        ("everyone","everyone"),
+    )
+
+    text = models.CharField(max_length=200)
+    title = models.CharField(max_length=50,null=True)
+    receiver = models.CharField(choices=receiver_options, max_length=10)
+    document = models.FileField(upload_to="notifications/", null=True)
+    sent_time = models.TimeField(auto_now_add=False, auto_now=True)
+    #default=datetime.datetime.now().strftime("%H:%M:%S"))
+    sent_date = models.DateField(auto_now_add=False, auto_now=True)
+    #default=datetime.date.today().strftime("%Y-%m-%d"))

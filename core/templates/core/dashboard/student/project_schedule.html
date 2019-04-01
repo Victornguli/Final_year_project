@@ -1,0 +1,36 @@
+{% extends "core/dashboard/dashboard_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="page-header">Schedule</h2>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <b>Project Schedule</b>
+                </div>
+                <!-- Panel Heading -->
+
+                <div class="panel-body">
+
+                    <div id="chart-1" class="">
+                        {{ output|safe }}
+                    </div>
+
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+</div>
+
+{% endblock %}

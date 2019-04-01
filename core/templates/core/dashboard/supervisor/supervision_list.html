@@ -1,0 +1,56 @@
+{% extends "core/dashboard/dashboard_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="page-header">Schedule</h2>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <b>Supervision List</b>
+                </div>
+                <!-- Panel Heading -->
+
+                <div class="panel-body">
+                    <table class="table table-striped table-hover bg-success">
+                        <h6 class="mt-5 mb-3">Supervision List</h6>
+                           <thead class="thead-primary">
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Registration Number</th>
+                            <th>Course</th>
+                            <th>Project Title</th>
+                        </thead>
+                        {% for student in students %}
+                        {% if student.status %}
+                        <tr>
+                            <td>{{ student.first_name }}</td>
+                            <td>{{ student.last_name }}</td>
+                            <td>{{ student.reg_number }}</td>
+                            {% if student.course == "CS" %}
+                            <td>BSC(Computer Science)</td>
+                            {% else %}
+                            <td>BSC(Applied Computer Science)</td>
+                            {% endif %}
+                            <td><a href="{% url "project_supervision" student.id %}">{{ student.project.title }}</a></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+</div>
+
+{% endblock %}

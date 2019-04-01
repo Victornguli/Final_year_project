@@ -1,12 +1,7 @@
 {% extends "core/logged_base.html" %}
 {% block content %}
-<div class="breadcrumbs">
-  <a href="{% url "home" %}">SPMS</a>
-  &rsaquo;
-  <a href="{% url  "select_signup" %}">Registration</a>
-</div>
 <div class="wrapper">
-  <h3 class="mb-4"> <b> Sign Up for a free account</b></h3>
+  <h3 class="mb-4"> <b> SPMS Registration</b></h3>
   <p>Select the type of account you want to create below:</p>
   <a class="text-white" href="{% url "student_signup" %}">
     <button class="btn btn-primary mr-2 pl-3 pr-3 mb-4">Student</button>
