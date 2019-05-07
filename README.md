@@ -1,2 +1,2 @@
-# Student Project Management System
-This is my final year project for a Computer Science degree aimed at improving final year project supervision and management in Chuka University
+# Final Year Project Coordination tool
+Targeted for final year software project coordination especially between students and suervisors. Dynamic and interactive presentation of the project schedule and milestone/deliverable breakdowns is provided through a Gantt chart.
